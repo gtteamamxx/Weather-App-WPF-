@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZS1Planv2.Model.Application
+namespace WeatherApp.Models.Application
 {
     public class MVVMMessagerService
     {

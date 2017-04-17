@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:WeatherApp.Views"
         xmlns:viewmodels="clr-namespace:WeatherApp.ViewModels"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:WeatherApp.Behaviors"
         mc:Ignorable="d"
         Title="Weather App" 
+        ResizeMode="NoResize"
         Height="600" 
         Width="800">
 
@@ -20,7 +22,26 @@
     <Window.DataContext>
         <viewmodels:WeatherWindowViewModel />
     </Window.DataContext>
+
+    <StackPanel Orientation="Horizontal">
+        <i:Interaction.Behaviors>
+            <behaviors:StackPanelFramesAnimationBehavior />
+        </i:Interaction.Behaviors>
+        
+        <Frame Content="{Binding Page}"
+               Width="800"
+               NavigationUIVisibility="Hidden">
+            <Frame.Background>
+                <SolidColorBrush Color="#FF467E18" Opacity="0.7" />
+            </Frame.Background>
+        </Frame>
+        <Frame Content="{Binding Page2}"
+               Width="800"
+               NavigationUIVisibility="Hidden">
+            <Frame.Background>
+                <SolidColorBrush Color="Blue" Opacity="0.7" />
+            </Frame.Background>
+        </Frame>
+    </StackPanel>
     
-    <Frame Content="{Binding Page}" 
-           NavigationUIVisibility="Hidden"/>
 </Window>

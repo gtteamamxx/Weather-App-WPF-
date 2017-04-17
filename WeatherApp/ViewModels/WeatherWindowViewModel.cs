@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using WeatherApp.Models;
-using ZS1Planv2.Model.Application;
+using WeatherApp.Models.Application;
 
 namespace WeatherApp.ViewModels
 {
@@ -23,6 +23,15 @@ namespace WeatherApp.ViewModels
             set => OnPropertyChanged(ref _Page, value);
         }
 
+        private Page _Page2;
+        public Page Page2
+        {
+            get => _Page2;
+            set => OnPropertyChanged(ref _Page2, value);
+        }
+
+        public int FramePosition;
+
         private void WindowLoaded()
         {
             MVVMMessagerService.RegisterReceiver<Page>(typeof(WeatherWindowViewModel), PageChangeRequest);
@@ -31,7 +40,19 @@ namespace WeatherApp.ViewModels
 
         private void PageChangeRequest(Page destPage)
         {
-            Page = destPage;
+            FramePosition = FramePosition == 0 ? 1 : 0;
+
+            MVVMMessagerService.SendMessage(
+                typeof(Behaviors.StackPanelFramesAnimationBehavior), FramePosition);
+
+            if (FramePosition == 0)
+            {
+                Page = destPage;
+            }
+            else
+            {
+                Page2 = destPage;
+            }
         }
     }
 }

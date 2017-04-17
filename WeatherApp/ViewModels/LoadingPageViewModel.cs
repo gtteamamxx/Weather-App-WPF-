@@ -8,7 +8,7 @@ using System.Windows;
 using WeatherApp.Models;
 using WeatherApp.Models.Factory;
 using WeatherApp.Properties;
-using ZS1Planv2.Model.Application;
+using WeatherApp.Models.Application;
 
 namespace WeatherApp.ViewModels
 {
@@ -49,6 +49,7 @@ namespace WeatherApp.ViewModels
                 return;
             }
 
+            await Task.Delay(300);
             App.Current.Dispatcher.Invoke(() => ShowWeatherWindow(selectCity: Settings.Default.FirstRun));
         }
 
@@ -64,7 +65,14 @@ namespace WeatherApp.ViewModels
 
         private static void ShowWeatherWindow(bool selectCity = false)
         {
-            MVVMMessagerService.SendMessage(typeof(WeatherWindowViewModel), new Views.LoadingPage());
+            object pageToShow = null;
+
+            if (selectCity)
+                pageToShow = new Views.SearchCityPage();
+            else
+                pageToShow = new Views.CityWeatherPage();
+
+            MVVMMessagerService.SendMessage(typeof(WeatherWindowViewModel), pageToShow);
         }
 
         private async static Task<bool> CheckApiConnectionAsync()
