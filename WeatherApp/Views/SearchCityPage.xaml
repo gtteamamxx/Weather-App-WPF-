@@ -4,14 +4,19 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WeatherApp.Views"
+      xmlns:vm="clr-namespace:WeatherApp.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800">
+
+    <Page.DataContext>
+        <vm:SearchCityPageViewModel />
+    </Page.DataContext>
 
     <Grid>
         <Grid>
             <Grid.Background>
                 <ImageBrush ImageSource="/WeatherApp;component/Assets/appbckg3.jpg"
-                        Stretch="UniformToFill"/>
+                            Stretch="UniformToFill"/>
             </Grid.Background>
 
             <Grid.Effect>
@@ -25,20 +30,95 @@
             </Ellipse.Fill>
         </Ellipse>
 
-        <Border CornerRadius="40"
-                BorderBrush="White"
-                Width="400"
-                Height="300"
-                BorderThickness="1">
-            
-            <Border.Background>
+        <Grid Width="150"
+              Height="200"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Right">
+
+            <StackPanel>
+                <Button x:Name="button" Width="100"
+                        Height="100"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0" Style="{DynamicResource ButtonHoverTransparent}">
+
+                    <Image Source="/WeatherApp;component/Assets/rightarrow.png"
+                               Width="50"/>
+                </Button>
+                <TextBlock Text="Przejdź dalej"
+                           TextAlignment="Center"
+                           Foreground="White">
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+
+        <StackPanel Width="400"
+                    Height="150">
+
+            <StackPanel.Background>
                 <SolidColorBrush Color="Purple" Opacity="0.1" />
-            </Border.Background>
-            
-            <Grid>
-                
+            </StackPanel.Background>
+
+            <TextBlock Text="Wyszukaj miasto:"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource TextBlockHeaderStyle}" />
+
+            <Grid Height="30"
+                  Margin="10"
+                  Width="300">
+
+                <ComboBox Margin="3.875,0"
+                          IsEnabled="False"
+                          SelectedItem="{Binding SelectedTipCity}"
+                          IsDropDownOpen="{Binding IsCityTipOpen}"
+                          ItemsSource="{Binding CityTips}">
+
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                            <GradientStop Color="#FFF300FF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="Gray" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="White"
+                                       Text="{Binding name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Border CornerRadius="4"
+                        BorderBrush="Purple"
+                        BorderThickness="0.5">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="White"/>
+                            <GradientStop Color="#FFE570FF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Border.Background>
+
+
+                    <TextBox Background="Transparent"
+                             Margin="3.875,0"
+                             BorderThickness="0"
+                             TextAlignment="Center"
+                             Text="{Binding SearchCityName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                             FontSize="20"
+                             BorderBrush="Transparent">
+
+                    </TextBox>
+                </Border>
             </Grid>
-        </Border>
+        </StackPanel>
 
     </Grid>
 </Page>

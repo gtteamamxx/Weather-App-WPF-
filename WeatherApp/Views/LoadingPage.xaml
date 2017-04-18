@@ -41,15 +41,8 @@
             <TextBlock Text="Wczytywanie..." 
                        VerticalAlignment="Center"
                        Margin="0 -75 0 0"
-                       Foreground="White"
-                       FontSize="32"
-                       HorizontalAlignment="Center">
-
-                <TextBlock.Effect>
-                    <DropShadowEffect Opacity="0.5" />
-                </TextBlock.Effect>
-
-            </TextBlock>
+                       Style="{StaticResource TextBlockHeaderStyle}"
+                       HorizontalAlignment="Center" />
 
             <ProgressBar Height="7"
                          Value="{Binding LoadingValue}">
