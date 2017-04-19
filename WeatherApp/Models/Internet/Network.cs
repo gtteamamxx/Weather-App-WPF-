@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 using System.Threading.Tasks;
 
 namespace WeatherApp.Models.Internet
 {
-    class Network
+    public class Network
     {
         private const string _API_URL = "https://www.apixu.com";
         private const string _TEST_URL = "http://google.pl";

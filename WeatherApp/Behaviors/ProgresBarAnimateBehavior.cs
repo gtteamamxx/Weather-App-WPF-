@@ -10,9 +10,9 @@ using System.Windows.Media.Animation;
 
 namespace WeatherApp.Behaviors
 {
-    class ProgresBarAnimateBehavior : Behavior<ProgressBar>
+    public class ProgresBarAnimateBehavior : Behavior<ProgressBar>
     {
-        bool _IsAnimating = false;
+        bool _isAnimating = false;
 
         protected override void OnAttached()
         {
@@ -23,10 +23,10 @@ namespace WeatherApp.Behaviors
 
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_IsAnimating)
+            if (_isAnimating)
                 return;
 
-            _IsAnimating = true;
+            _isAnimating = true;
 
             DoubleAnimation doubleAnimation = new DoubleAnimation
                 (e.OldValue, e.NewValue, new Duration(TimeSpan.FromSeconds(0.3)), FillBehavior.Stop);
@@ -39,7 +39,7 @@ namespace WeatherApp.Behaviors
 
         private void doubleAnimationCompleted(object sender, EventArgs e)
         {
-            _IsAnimating = false;
+            _isAnimating = false;
         }
 
         protected override void OnDetaching()

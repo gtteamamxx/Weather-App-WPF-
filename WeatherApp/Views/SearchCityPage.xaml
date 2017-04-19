@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WeatherApp.Views"
       xmlns:vm="clr-namespace:WeatherApp.ViewModels"
-      mc:Ignorable="d" 
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800">
 
     <Page.DataContext>
@@ -34,16 +35,28 @@
               Height="200"
               VerticalAlignment="Center"
               HorizontalAlignment="Right">
-
+            
+            <Grid>
+                <TextBlock Text="Wybierz poprawne miasto!" />
+            </Grid>
+            
             <StackPanel>
                 <Button x:Name="button" Width="100"
                         Height="100"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        BorderThickness="0" Style="{DynamicResource ButtonHoverTransparent}">
-
+                        BorderThickness="0" 
+                        Style="{DynamicResource ButtonHoverColor}">
+                    
                     <Image Source="/WeatherApp;component/Assets/rightarrow.png"
-                               Width="50"/>
+                           Width="50"/>
+                    
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding ShowWeatherButtonCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    
                 </Button>
                 <TextBlock Text="Przejdź dalej"
                            TextAlignment="Center"
@@ -71,41 +84,64 @@
                 <ComboBox Margin="3.875,0"
                           IsEnabled="False"
                           SelectedItem="{Binding SelectedTipCity}"
-                          IsDropDownOpen="{Binding IsCityTipOpen}"
+                          IsDropDownOpen="{Binding IsCitiesTipOpen}"
                           ItemsSource="{Binding CityTips}">
 
-                    <ComboBox.Background>
-                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                            <GradientStop Color="#FFF300FF" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ComboBox.Background>
-
                     <ComboBox.ItemContainerStyle>
-                        <Style TargetType="ComboBoxItem">
-                            <Setter Property="Background" Value="Gray" />
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter Property="Background" Value="#0f000000" />
                             <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="BorderBrush" Value="Gray" />
+                            <Setter Property="Margin" Value="0 1" />
+                            <Setter Property="BorderThickness" Value="0 0 0 1" />
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Opacity="0.2" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ComboBoxItem.HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="ComboBoxItem.VerticalContentAlignment" Value="Center" />
                         </Style>
                     </ComboBox.ItemContainerStyle>
 
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Foreground="White"
-                                       Text="{Binding name}" />
+                                <Grid Width="280"
+                                      Height="30"
+                                      Margin="0, 5">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                            <Run Text="Miasto:"
+                                                 FontWeight="DemiBold"/>
+                                            <Run Text="{Binding name}"
+                                                 Foreground="Blue"/>
+                                        </TextBlock>
+                                        <TextBlock FontWeight="Light">
+                                            <Run Text="Kraj:"
+                                                 FontWeight="DemiBold" />
+                                            <Run Text="{Binding country}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                
+                                    <StackPanel HorizontalAlignment="Right">
+                                        <TextBlock>
+                                            <Run Text="{Binding lat, StringFormat=\{0:00.00\}}" />
+                                            <Run Text="°" />
+                                        </TextBlock>
+                                        <TextBlock>
+                                            <Run Text="{Binding lon, StringFormat=\{0:00.00\}}" />
+                                            <Run Text="°" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
                 <Border CornerRadius="4"
-                        BorderBrush="Purple"
-                        BorderThickness="0.5">
-                    <Border.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Color="White"/>
-                            <GradientStop Color="#FFE570FF" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Border.Background>
-
+                        BorderBrush="Blue"
+                        BorderThickness="1" 
+                        Background="White">
 
                     <TextBox Background="Transparent"
                              Margin="3.875,0"
@@ -114,7 +150,13 @@
                              Text="{Binding SearchCityName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              FontSize="20"
                              BorderBrush="Transparent">
-
+                        
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="LostFocus">
+                                <i:InvokeCommandAction Command="{Binding SearchCityNameTextBoxFocusLostCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        
                     </TextBox>
                 </Border>
             </Grid>

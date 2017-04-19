@@ -1,4 +1,5 @@
 ﻿using APIXULib;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,88 +8,103 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WeatherApp.Models;
+using WeatherApp.Models.Application;
 using WeatherApp.Models.Internet;
 
 namespace WeatherApp.ViewModels
 {
-    class SearchCityPageViewModel : ViewModelBase
+    public class SearchCityPageViewModel : ViewModelBase
     {
         public SearchCityPageViewModel()
         {
             CityTips = new ObservableCollection<Location>();
         }
 
-        private bool _IsTipSelected = false;
+        #region Commands
+
+        private RelayCommand _showWeatherButtonCommand;
+        public RelayCommand ShowWeatherButtonCommand =>
+            _showWeatherButtonCommand ?? (_showWeatherButtonCommand = new RelayCommand(() => ShowWeatherButton_Click()));
+
+        private RelayCommand _searchCityNameTextBoxFocusLostCommand;
+        public RelayCommand SearchCityNameTextBoxFocusLostCommand =>
+            _searchCityNameTextBoxFocusLostCommand ?? (_searchCityNameTextBoxFocusLostCommand = new RelayCommand(() => SearchTextBox_FocusLost()));
+
+        #endregion
+
+        private bool _isTipSelected;
+
         #region Properties
-        private bool _IsCityTipOpen;
-        public bool IsCityTipOpen
+        private bool _isCityTipOpen;
+        public bool IsCitiesTipOpen
         {
-            get => _IsCityTipOpen;
+            get => _isCityTipOpen;
             set
             {
                 if (CityTips.Count() > 0)
                     return;
-                OnPropertyChanged(ref _IsCityTipOpen, value);
+                OnPropertyChanged(ref _isCityTipOpen, value);
             }
         }
 
-        private ObservableCollection<Location> _CityTips;
+        private ObservableCollection<Location> _cityTips;
         public ObservableCollection<Location> CityTips
         {
-            get => _CityTips;
-            set => OnPropertyChanged(ref _CityTips, value);
+            get => _cityTips;
+            set => OnPropertyChanged(ref _cityTips, value);
         }
 
-        private string _SearchCityName;
+        private string _searchCityName = "(Nazwa miasta, Kraj)";
         public string SearchCityName
         {
-            get => _SearchCityName;
+            get => _searchCityName;
             set
             {
-                if (_SearchCityName == value)
+                if (_searchCityName == value)
                     return;
-                _SearchCityName = value;
-                SearchTextChanged(value);
-                OnPropertyChanged(ref _SearchCityName, value);
+                _searchCityName = value;
+                SearchTextChangedAsync(value);
+                OnPropertyChanged(ref _searchCityName, value);
             }
         }
 
-        private Location _SelectedTipCity;
+        private Location _selectedTipCity;
         public Location SelectedTipCity
         {
-            get => _SelectedTipCity;
+            get => _selectedTipCity;
             set
             {
                 if(value != null)
                 {
-                    _IsTipSelected = true;
+                    _isTipSelected = true;
                     SearchCityName = value.name;
+                    _selectedTipCity = value;
+                    OnPropertyChanged(ref _selectedTipCity, value);
                 }
-                OnPropertyChanged(ref _SelectedTipCity, value);
             }
         }
         #endregion
 
-        private void SearchTextChanged(string searchText)
+        private void ShowWeatherButton_Click()
         {
+            MVVMMessagerService.SendMessage(typeof(WeatherWindowViewModel), new Views.CityWeatherPage());
+            MVVMMessagerService.SendMessage(typeof(CityWeatherPageViewModel), SelectedTipCity);
+        }
+
+        private async void SearchTextChangedAsync(string searchText)
+        {
+            if (!IsAbleToDownloadNewSugesstionList(searchText))
+                return;
+
+            if (!IsCitiesTipOpen)
+                IsCitiesTipOpen = true;
+
+            List<Location> suggestedLocations = await APIXUWeatherService.GetAutoCompleteCityNamesAsync(searchText);
             CityTips.Clear();
 
-            if (_IsTipSelected ||  string.IsNullOrEmpty(searchText))
+            if (suggestedLocations.Count() == 0)
             {
-                if (_IsTipSelected)
-                    _IsTipSelected = false;
-
-                IsCityTipOpen = false;
-                return;
-            }
-
-            IsCityTipOpen = true;
-
-            List<Location> suggestedLocations = Task.Run(() => APIXUWeatherService.GetAutoCompleteCityNamesAsync(searchText)).Result;
-
-            if(suggestedLocations.Count() == 0)
-            {
-                IsCityTipOpen = false;
+                IsCitiesTipOpen = false;
                 return;
             }
 
@@ -98,5 +114,23 @@ namespace WeatherApp.ViewModels
             }
         }
 
+        private bool IsAbleToDownloadNewSugesstionList(string searchText)
+        {
+            if (_isTipSelected || string.IsNullOrEmpty(searchText))
+            {
+                if (_isTipSelected)
+                    _isTipSelected = false;
+
+                IsCitiesTipOpen = false;
+                CityTips.Clear();
+                return false;
+            }
+            return true;
+        }
+
+        private void SearchTextBox_FocusLost()
+        {
+            IsCitiesTipOpen = false;
+        }
     }
 }

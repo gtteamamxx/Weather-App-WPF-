@@ -12,7 +12,7 @@ using WeatherApp.Models.Application;
 
 namespace WeatherApp.Behaviors
 {
-    class StackPanelFramesAnimationBehavior : Behavior<StackPanel>
+    public class StackPanelFramesAnimationBehavior : Behavior<StackPanel>
     {
         private List<Frame> _Frames;
         private WeatherWindowViewModel _WeatherWindowViewModel;

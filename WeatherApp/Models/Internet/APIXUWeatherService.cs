@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace WeatherApp.Models.Internet
 {
-    class APIXUWeatherService
+    public class APIXUWeatherService
     {
         public async static Task<List<Location>> GetAutoCompleteCityNamesAsync(string value)
         {

@@ -59,7 +59,21 @@ namespace WeatherApp.Models.Application
             }
         }
 
+        public static bool ReceiverExist(Type receiverType)
+        {
+            return _RegisteredReceivers.Any(p => p.Key == receiverType);
+        }
+
+        public static int GetReceiversNum(Type receiverType)
+        {
+            return _RegisteredReceivers.Count(p => p.Key == receiverType);
+        }
+
         public static void UnregisterReceiver(Type sourcePageType)
-            => _RegisteredReceivers.Remove(sourcePageType);
+        {
+            if (!_RegisteredReceivers.Any(p => p.Key == sourcePageType))
+                throw new Exception("Can't unregister `" + sourcePageType + "` because it doesnt exist.");
+            _RegisteredReceivers.Remove(sourcePageType);
+        }
     }
 }
