@@ -2,8 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WeatherApp.Views" 
-             StartupUri="Views/WeatherWindow.xaml">
+             StartupUri="Views/WeatherWindow.xaml"
+             xmlns:converters="clr-namespace:WeatherApp.Converters">
+    
     <Application.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         
         <Style x:Key="TextBlockHeaderStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />

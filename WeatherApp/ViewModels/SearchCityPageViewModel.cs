@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Models.Application;
 using WeatherApp.Models.Internet;
+using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
 {
@@ -25,10 +26,6 @@ namespace WeatherApp.ViewModels
         private RelayCommand _showWeatherButtonCommand;
         public RelayCommand ShowWeatherButtonCommand =>
             _showWeatherButtonCommand ?? (_showWeatherButtonCommand = new RelayCommand(() => ShowWeatherButton_Click()));
-
-        private RelayCommand _searchCityNameTextBoxFocusLostCommand;
-        public RelayCommand SearchCityNameTextBoxFocusLostCommand =>
-            _searchCityNameTextBoxFocusLostCommand ?? (_searchCityNameTextBoxFocusLostCommand = new RelayCommand(() => SearchTextBox_FocusLost()));
 
         #endregion
 
@@ -77,18 +74,36 @@ namespace WeatherApp.ViewModels
                 if(value != null)
                 {
                     _isTipSelected = true;
+
                     SearchCityName = value.name;
-                    _selectedTipCity = value;
+                    _selectedTipCity = _temporarySelectedCity = value;
+
                     OnPropertyChanged(ref _selectedTipCity, value);
                 }
             }
         }
+
+        private bool _IsShowWeatherButtonVisible;
+        public bool IsShowWeatherButtonVisible
+        {
+            get => _IsShowWeatherButtonVisible;
+            set => OnPropertyChanged(ref _IsShowWeatherButtonVisible, value);
+        }
+
+        private Location _temporarySelectedCity;
+
         #endregion
 
         private void ShowWeatherButton_Click()
         {
-            MVVMMessagerService.SendMessage(typeof(WeatherWindowViewModel), new Views.CityWeatherPage());
-            MVVMMessagerService.SendMessage(typeof(CityWeatherPageViewModel), SelectedTipCity);
+            MVVMMessagerService.SendMessage(typeof(PageChangeMessage), new PageChangeMessage()
+            {
+                PageToChange = new Views.CityWeatherPage()
+            });
+            MVVMMessagerService.SendMessage(typeof(ShowWeatherOfCityMessage), new ShowWeatherOfCityMessage()
+            {
+                City = _temporarySelectedCity
+            });
         }
 
         private async void SearchTextChangedAsync(string searchText)
@@ -126,11 +141,6 @@ namespace WeatherApp.ViewModels
                 return false;
             }
             return true;
-        }
-
-        private void SearchTextBox_FocusLost()
-        {
-            IsCitiesTipOpen = false;
         }
     }
 }

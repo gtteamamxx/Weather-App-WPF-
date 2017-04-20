@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Models.Application;
+using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
 {
@@ -13,12 +14,13 @@ namespace WeatherApp.ViewModels
     {
         public CityWeatherPageViewModel()
         {
-            MVVMMessagerService.RegisterReceiver<Location>(typeof(CityWeatherPageViewModel), ShowWeatherForCity);
+            MVVMMessagerService.RegisterReceiver<ShowWeatherOfCityMessage>(typeof(ShowWeatherOfCityMessage), ShowWeatherForCity);
         }
 
-        private void ShowWeatherForCity(Location obj)
+        private void ShowWeatherForCity(ShowWeatherOfCityMessage message)
         {
-            ;
+            Location cityToShow = message.City;
+
         }
     }
 }

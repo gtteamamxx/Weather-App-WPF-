@@ -105,7 +105,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behaviors\StackPanelFramesAnimationBehavior.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Models\Application\MVVMMessagerService.cs" />
+    <Compile Include="MVVMMessages\AnimatePageChangingMessage.cs" />
+    <Compile Include="MVVMMessages\MessageBase.cs" />
+    <Compile Include="MVVMMessages\PageChangeMessage.cs" />
+    <Compile Include="MVVMMessages\ShowWeatherOfCityMessage.cs" />
     <Compile Include="ViewModels\CityWeatherPageViewModel.cs" />
     <Compile Include="ViewModels\SearchCityPageViewModel.cs" />
     <Compile Include="ViewModels\WeatherWindowViewModel.cs" />
@@ -177,9 +182,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>

@@ -9,6 +9,7 @@ using System.Windows.Interactivity;
 using System.Windows.Media.Animation;
 using WeatherApp.ViewModels;
 using WeatherApp.Models.Application;
+using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.Behaviors
 {
@@ -21,11 +22,13 @@ namespace WeatherApp.Behaviors
         {
             base.OnAttached();
             AssociatedObject.Loaded += StackPanel_Loaded;
-            MVVMMessagerService.RegisterReceiver<int>(typeof(StackPanelFramesAnimationBehavior), PageChangeRequest);
+            MVVMMessagerService.RegisterReceiver<AnimatePageChangingMessage>(typeof(AnimatePageChangingMessage), PageChangeRequest);
         }
 
-        private void PageChangeRequest(int frameIndexToAnimate)
+        private void PageChangeRequest(AnimatePageChangingMessage message)
         {
+            int frameIndexToAnimate = message.FrameToAnimate;
+
             ThicknessAnimation thicknessAnimation = new ThicknessAnimation()
             {
                 Duration = TimeSpan.FromSeconds(0.3),
