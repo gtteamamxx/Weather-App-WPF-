@@ -9,7 +9,7 @@ namespace WeatherApp.Models.Application
 {
     public class MVVMMessagerService
     {
-        private static Dictionary<Type, object> _RegisteredReceivers;
+        private static Dictionary<Type, object> _registeredReceivers;
 
         public static void RegisterReceiver(Type sourcePageType, Action action)
             => _RegisterReceiver(sourcePageType, action);
@@ -20,16 +20,16 @@ namespace WeatherApp.Models.Application
 
         private static void _RegisterReceiver(Type sourcePageType, object action)
         {
-            if (_RegisteredReceivers == null)
-                _RegisteredReceivers = new Dictionary<Type, object>();
-            if (_RegisteredReceivers.Any(p => p.Key == sourcePageType))
+            if (_registeredReceivers == null)
+                _registeredReceivers = new Dictionary<Type, object>();
+            if (_registeredReceivers.Any(p => p.Key == sourcePageType))
                 return;
-            _RegisteredReceivers.Add(sourcePageType, action);
+            _registeredReceivers.Add(sourcePageType, action);
         }
 
         public static void SendMessage(Type pageToReceiveType, object one = null, object two = null)
         {
-            foreach (KeyValuePair<Type, object> receiver in _RegisteredReceivers.Where(p => p.Key == pageToReceiveType))
+            foreach (KeyValuePair<Type, object> receiver in _registeredReceivers.Where(p => p.Key == pageToReceiveType))
             {
                 object action = receiver.Value;
 
@@ -46,19 +46,19 @@ namespace WeatherApp.Models.Application
 
         public static bool ReceiverExist(Type receiverType)
         {
-            return _RegisteredReceivers.Any(p => p.Key == receiverType);
+            return _registeredReceivers.Any(p => p.Key == receiverType);
         }
 
         public static int GetReceiversNum(Type receiverType)
         {
-            return _RegisteredReceivers.Count(p => p.Key == receiverType);
+            return _registeredReceivers.Count(p => p.Key == receiverType);
         }
 
         public static void UnregisterReceiver(Type sourcePageType)
         {
-            if (!_RegisteredReceivers.Any(p => p.Key == sourcePageType))
+            if (!_registeredReceivers.Any(p => p.Key == sourcePageType))
                 throw new Exception("Can't unregister `" + sourcePageType + "` because it doesnt exist.");
-            _RegisteredReceivers.Remove(sourcePageType);
+            _registeredReceivers.Remove(sourcePageType);
         }
     }
 }

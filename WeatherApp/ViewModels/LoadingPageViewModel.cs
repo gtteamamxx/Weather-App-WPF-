@@ -16,19 +16,19 @@ namespace WeatherApp.ViewModels
     class LoadingPageViewModel : ViewModelBase
     {
         #region Commands
-        private RelayCommand _PageLoadedCommand;
+        private RelayCommand _pageLoadedCommand;
         public RelayCommand PageLoadedCommand =>
-            _PageLoadedCommand ?? (_PageLoadedCommand = new RelayCommand(async () => await PageLoadedAsync()));
+            _pageLoadedCommand ?? (_pageLoadedCommand = new RelayCommand(async () => await PageLoadedAsync()));
 
         #endregion
 
         #region Properties
 
-        private double _LoadingValue;
+        private double _loadingValue;
         public double LoadingValue
         {
-            get => _LoadingValue;
-            set => OnPropertyChanged(ref _LoadingValue, value);
+            get => _loadingValue;
+            set => OnPropertyChanged(ref _loadingValue, value);
         }
 
         #endregion

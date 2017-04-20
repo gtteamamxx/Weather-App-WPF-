@@ -36,12 +36,8 @@ namespace WeatherApp.ViewModels
         public bool IsCitiesTipOpen
         {
             get => _isCityTipOpen;
-            set
-            {
-                if (CityTips.Count() > 0)
-                    return;
-                OnPropertyChanged(ref _isCityTipOpen, value);
-            }
+            set => OnPropertyChanged(ref _isCityTipOpen, value);
+      
         }
 
         private ObservableCollection<Location> _cityTips;
@@ -59,7 +55,10 @@ namespace WeatherApp.ViewModels
             {
                 if (_searchCityName == value)
                     return;
+
                 _searchCityName = value;
+                _temporarySelectedCity = null;
+
                 SearchTextChangedAsync(value);
                 OnPropertyChanged(ref _searchCityName, value);
             }
@@ -77,20 +76,28 @@ namespace WeatherApp.ViewModels
 
                     SearchCityName = value.name;
                     _selectedTipCity = _temporarySelectedCity = value;
-
                     OnPropertyChanged(ref _selectedTipCity, value);
                 }
             }
         }
 
-        private bool _IsShowWeatherButtonVisible;
+        private bool _isShowWeatherButtonVisible;
         public bool IsShowWeatherButtonVisible
         {
-            get => _IsShowWeatherButtonVisible;
-            set => OnPropertyChanged(ref _IsShowWeatherButtonVisible, value);
+            get => _isShowWeatherButtonVisible;
+            set => OnPropertyChanged(ref _isShowWeatherButtonVisible, value);
         }
 
-        private Location _temporarySelectedCity;
+        private Location __temporarySelectedCity;
+        private Location _temporarySelectedCity
+        {
+            get => __temporarySelectedCity;
+            set
+            {
+                __temporarySelectedCity = value;
+                IsShowWeatherButtonVisible = value != null;
+            }
+        }
 
         #endregion
 

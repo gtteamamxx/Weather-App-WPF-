@@ -15,8 +15,8 @@ namespace WeatherApp.Behaviors
 {
     public class StackPanelFramesAnimationBehavior : Behavior<StackPanel>
     {
-        private List<Frame> _Frames;
-        private WeatherWindowViewModel _WeatherWindowViewModel;
+        private List<Frame> _frames;
+        private WeatherWindowViewModel _weatherWindowViewModel;
 
         protected override void OnAttached()
         {
@@ -38,18 +38,18 @@ namespace WeatherApp.Behaviors
                 FillBehavior = FillBehavior.HoldEnd
             };
 
-            _Frames[0].BeginAnimation(Frame.MarginProperty, thicknessAnimation);
+            _frames[0].BeginAnimation(Frame.MarginProperty, thicknessAnimation);
         }
 
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            _Frames = new List<Frame>
+            _frames = new List<Frame>
             {
                 AssociatedObject.Children[0] as Frame,
                 AssociatedObject.Children[1] as Frame
             };
 
-            _WeatherWindowViewModel = AssociatedObject.DataContext as WeatherWindowViewModel;
+            _weatherWindowViewModel = AssociatedObject.DataContext as WeatherWindowViewModel;
         }
 
         protected override void OnDetaching()

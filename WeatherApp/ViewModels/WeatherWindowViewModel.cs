@@ -13,25 +13,25 @@ namespace WeatherApp.ViewModels
 {
     class WeatherWindowViewModel : ViewModelBase
     {
-        private RelayCommand _WindowLoadedCommand;
+        private RelayCommand _windowLoadedCommand;
         public RelayCommand WindowLoadedCommand =>
-            _WindowLoadedCommand ?? (_WindowLoadedCommand = new RelayCommand(WindowLoaded));
+            _windowLoadedCommand ?? (_windowLoadedCommand = new RelayCommand(WindowLoaded));
 
-        private Page _Page;
+        private Page _page;
         public Page Page
         {
-            get => _Page;
-            set => OnPropertyChanged(ref _Page, value);
+            get => _page;
+            set => OnPropertyChanged(ref _page, value);
         }
 
-        private Page _Page2;
+        private Page _page2;
         public Page Page2
         {
-            get => _Page2;
-            set => OnPropertyChanged(ref _Page2, value);
+            get => _page2;
+            set => OnPropertyChanged(ref _page2, value);
         }
 
-        public int FramePosition;
+        public int FramePosition { get; set; }
 
         private void WindowLoaded()
         {
