@@ -9,6 +9,7 @@ using WeatherApp.Models;
 using WeatherApp.Models.Factory;
 using WeatherApp.Properties;
 using WeatherApp.Models.Application;
+using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
 {
@@ -65,14 +66,12 @@ namespace WeatherApp.ViewModels
 
         private static void ShowWeatherWindow(bool selectCity = false)
         {
-            object pageToShow = null;
+            dynamic pageToShow = selectCity ? (object)new Views.SearchCityPage() : new Views.CityWeatherPage();
 
-            if (selectCity)
-                pageToShow = new Views.SearchCityPage();
-            else
-                pageToShow = new Views.CityWeatherPage();
-
-            MVVMMessagerService.SendMessage(typeof(WeatherWindowViewModel), pageToShow);
+            MVVMMessagerService.SendMessage(typeof(PageChangeMessage), new PageChangeMessage()
+            {
+                PageToChange = pageToShow
+            });
         }
 
         private async static Task<bool> CheckApiConnectionAsync()
