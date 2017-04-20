@@ -35,8 +35,8 @@ namespace WeatherApp.ViewModels
         private async Task PageLoadedAsync()
         {
             (bool, int) resultState = await new ActionFactory()
-                .ContinueWith(async () => await CheckInternetConnectionAsync())
-                .ContinueWith(async () => await CheckApiConnectionAsync())
+                .ContinueWith(async () => !await IsInternetConnectionAvailableAsync())
+                .ContinueWith(async () => !await IsApiConnectionAvailableAsync())
                 .ProgressChanged(ChangeLoadingValue)
                 .StartAsync().ConfigureAwait(false);
 
@@ -74,14 +74,14 @@ namespace WeatherApp.ViewModels
             });
         }
 
-        private async static Task<bool> CheckApiConnectionAsync()
+        private async static Task<bool> IsApiConnectionAvailableAsync()
         {
-            return !await Models.Internet.Network.IsApiAvailable();
+            return await Models.Internet.Network.IsApiAvailable();
         }
 
-        private async static Task<bool> CheckInternetConnectionAsync()
+        private async static Task<bool> IsInternetConnectionAvailableAsync()
         {
-            return !await Models.Internet.Network.IsInternetAvailableAsync();
+            return await Models.Internet.Network.IsInternetAvailableAsync();
         }
     }
 }
