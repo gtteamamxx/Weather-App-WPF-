@@ -213,5 +213,14 @@
   <ItemGroup>
     <Resource Include="Assets\sun.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\wind.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\visibility.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\humidity.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -26,13 +26,16 @@ namespace WeatherApp.Behaviors
         {
             _isOpened = !_isOpened;
 
-            Storyboard arrowImageAnimation = getArrowImageAnimation();
-            arrowImageAnimation.Begin();
+            var controlsList = (AssociatedObject.Children[0] as StackPanel).Children.Cast<UIElement>();
+
+            getArrowImageAnimation().Begin();
             AssociatedObject.BeginAnimation(Grid.HeightProperty, getHeightAnimation());
+
+            ChangeTextOnTextInfo();
 
             Storyboard getArrowImageAnimation()
             {
-                var arrowImage = (AssociatedObject.Children[0] as StackPanel).Children.Cast<UIElement>().First(p => p is Image) as Image;
+                var arrowImage = controlsList.First(p => p is Image) as Image;
                 return arrowImage.FindResource(_isOpened ?
                 "RotateImageAsUpArrowFromDownArrow" : "RotateImageAsDownArrowFromUpArrow") as Storyboard; ;
             }
@@ -43,6 +46,13 @@ namespace WeatherApp.Behaviors
                     _isOpened ? 20 : 150, 
                     _isOpened ? 150 : 20, 
                     new Duration(TimeSpan.FromSeconds(0.15)));
+            }
+
+            void ChangeTextOnTextInfo()
+            {
+                var infoTextBlock = (controlsList.First(p => p is TextBlock) as TextBlock);
+                var stackPanelWithResources = (AssociatedObject.Children[0] as StackPanel);
+                infoTextBlock.Style = stackPanelWithResources.Resources[_isOpened ? (dynamic)"ShowInfoText" : "HideInfoText"];
             }
         }
 

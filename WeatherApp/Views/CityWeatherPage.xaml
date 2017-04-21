@@ -81,6 +81,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </Page.Resources>
     <Page.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -127,15 +128,19 @@
                                FontSize="19" />
 
                     <StackPanel Orientation="Horizontal">
+
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}" >
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontSize" Value="14" />
+                                <Setter Property="FontWeight" Value="Light" />
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <TextBlock Text="52.17*" />
+
                         <TextBlock Text="52.17*"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="Light"/>
-                        <TextBlock Text="52.17*"
-                                   Margin="10 0"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="Light"/>
+                                   Margin="10 0" />
                     </StackPanel>
 
                 </StackPanel>
@@ -195,16 +200,23 @@
                     <StackPanel Grid.Column="2"
                                 Margin="10 10"
                                 VerticalAlignment="Center">
-
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}">
+                                <Setter Property="FontSize" Value="16" />
+                            </Style>
+                        </StackPanel.Resources>
+                        
                         <TextBlock Text="Widoczność: 15,2 km"
-                                   Foreground="AntiqueWhite"
-                                   FontSize="16"/>
+                                   Foreground="AntiqueWhite" />
+                        
                         <TextBlock Text="Wilgotność: 52%"
-                                   Foreground="LimeGreen"
-                                   FontSize="16"/>
+                                   Foreground="LimeGreen" />
+                        
                         <TextBlock Text="Zachmurzenie: 81%"
-                                   Foreground="AliceBlue"
-                                   FontSize="16"/>
+                                   Foreground="AliceBlue" />
+                      
+                        <TextBlock Text="Opady: 0.15mm"
+                                   Foreground="White" />
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -212,7 +224,7 @@
             <Grid x:Name="ShowDetailGrid" 
                   Style="{StaticResource ContentWeatherGrid}"
                   Margin="40 0"
-                  Height="20"
+                  Height="150"
                   VerticalAlignment="Bottom"
                   Cursor="Hand">
 
@@ -220,12 +232,33 @@
                     <behaviors:ShowDetailGridHeightAnimationBehavior />
                 </i:Interaction.Behaviors>
 
+                <Grid.Resources>
+                    <Style x:Key="ColumnHeaderTextBlockStyle" TargetType="TextBlock">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="Margin" Value="10 0" />
+                        <Setter Property="FontWeight" Value="Light" />
+                        <Setter Property="Foreground" Value="Beige" />
+                    </Style>
+                </Grid.Resources>
+
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top">
-                    <TextBlock Text="Pokaż szczegółowe informacje"
-                               Margin="0 0 2 0"
-                               Foreground="Beige"/>
+
+                    <StackPanel.Resources>
+                        <Style x:Key="ShowInfoText" TargetType="TextBlock">
+                            <Setter Property="Text" Value="Pokaż szczegółowe informacje" />
+                        </Style>
+                        <Style x:Key="HideInfoText" TargetType="TextBlock">
+                            <Setter Property="Text" Value="Ukryj szczegółowe informacje" />
+                        </Style>
+                    </StackPanel.Resources>
+                    
+                    <TextBlock Margin="0 0 2 0"
+                               Foreground="Beige"
+                               Style="{StaticResource ShowInfoText}" />
+
                     <Image Source="/WeatherApp;component/Assets/rightarrow.png" 
                            RenderTransformOrigin="0.5,0.5"
                            Width="20"
@@ -244,15 +277,18 @@
                                                  Storyboard.TargetProperty="Angle" />
                             </Storyboard>
                         </Image.Resources>
+                        
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <RotateTransform x:Name="ArrowImageRotateTransform" Angle="90"/>
                             </TransformGroup>
                         </Image.RenderTransform>
+                        
                     </Image>
                 </StackPanel>
 
                 <Grid Margin="0 20 0 0">
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -262,59 +298,51 @@
                     <StackPanel>
 
                         <TextBlock Text="Temperatura"
-                                   HorizontalAlignment="Center"
-                                   Margin="10 0"
-                                   FontWeight="Light"
-                                   Foreground="Beige"/>
+                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
 
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center"
                                     Margin="10">
+
                             <StackPanel.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Effect">
-                                        <Setter.Value>
-                                            <DropShadowEffect Opacity="0" />
-                                        </Setter.Value>
-                                    </Setter>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="20" />
+                                    <Setter Property="TextAlignment" Value="Center" />
                                 </Style>
                             </StackPanel.Resources>
+
                             <StackPanel Margin="5">
-                                <TextBlock FontSize="20"
-                                           Text="15.1 *C"
+                                <TextBlock Text="15.1 *C"
                                            Foreground="Yellow"/>
                                 <TextBlock Text="Minimalna"
                                            FontSize="11"
-                                           TextAlignment="Center"
-                                           Foreground="#FF47FF92"/>
+                                           Foreground="White"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <TextBlock FontSize="20"
-                                           Text="15.1*C"
+                                <TextBlock Text="15.1*C"
                                            Foreground="Green"/>
                                 <TextBlock Text="Średnia"
                                            FontSize="11"
-                                           TextAlignment="Center"
-                                           Foreground="#FF47FF92"/>
+                                           Foreground="White"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <TextBlock FontSize="20"
-                                           Text="15.1*C"
+                                <TextBlock Text="15.1*C"
                                            Foreground="Orange"/>
                                 <TextBlock Text="Najwyższa"
                                            FontSize="11"
-                                           TextAlignment="Center"
-                                           Foreground="#FF47FF92"/>
+                                           Foreground="White"/>
                             </StackPanel>
                         </StackPanel>
 
                         <Border BorderThickness="1"
                                 Margin="20 0">
+
                             <Border.Effect>
                                 <DropShadowEffect Opacity="0.5" />
                             </Border.Effect>
+
                             <Border.BorderBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.3">
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.35">
                                     <LinearGradientBrush.RelativeTransform>
                                         <TransformGroup>
                                             <ScaleTransform CenterY="0.5" CenterX="0.5"/>
@@ -328,18 +356,16 @@
                                     <GradientStop Color="#FF1DFFEA" Offset="0.000"/>
                                 </LinearGradientBrush>
                             </Border.BorderBrush>
+
                         </Border>
+
                     </StackPanel>
 
                     <Border Style="{StaticResource BorderRightTransparent}" />
 
                     <Grid Grid.Column="1">
                         <TextBlock Text="Astro"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Top"
-                                   Margin="10 0"
-                                   FontWeight="Light"
-                                   Foreground="Beige" />
+                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
 
                         <Image Source="/WeatherApp;component/Assets/sunrise_line.png"
                                Margin="0 -10 0 0"
@@ -374,7 +400,7 @@
                                     VerticalAlignment="Bottom"
                                     Margin="40 25">
                             <TextBlock Text="6:24"
-                                       Foreground="Orange"
+                                       FontSize="16"
                                        TextAlignment="Center"/>
                             <TextBlock Text="Wschód"
                                        Foreground="White"/>
@@ -384,7 +410,7 @@
                                     VerticalAlignment="Bottom"
                                     Margin="40 25">
                             <TextBlock Text="20:24"
-                                       Foreground="Orange"
+                                       FontSize="16"
                                        TextAlignment="Center"/>
                             <TextBlock Text="Zachód"
                                        Foreground="White"/>
@@ -396,13 +422,58 @@
 
                     <Grid Grid.Column="2">
                         <TextBlock Text="Inne"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Top"
-                                   Margin="10 0"
-                                   FontWeight="Light"
-                                   Foreground="Beige" />
-                        <StackPanel>
+                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
+                        <StackPanel Margin="15"
+                                    VerticalAlignment="Center">
 
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="White" Opacity="0.25" Direction="-35" ShadowDepth="3" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Margin" Value="-3 0 0 0" />
+                                    <Setter Property="Width" Value="20" />
+                                    <Setter Property="Height" Value="20" />
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/WeatherApp;component/Assets/wind.png" />
+
+                                <TextBlock Foreground="White"
+                                           Margin="10 0">
+                                    <Run Text="Wiatr:" />
+                                    <Run Text="16.6"/>
+                                    <Run Text=" - " />
+                                    <Run Text="22.2 kmh/h" />
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0 10 0 0">
+                                <Image Source="/WeatherApp;component/Assets/visibility.png" />
+                                <TextBlock Foreground="White"
+                                           Margin="10 0">
+                                    <Run Text="Widoczność:" />
+                                    <Run Text="15.2"/>
+                                    <Run Text=" - " />
+                                    <Run Text="17.9 km" />
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0 10">
+                                <Image Source="/WeatherApp;component/Assets/humidity.png" />
+                                <TextBlock Foreground="White"
+                                           Margin="10 0">
+                                    <Run Text="Wilgotność:" />
+                                    <Run Text="52%"/>
+                                    <Run Text=" - " />
+                                    <Run Text="69%" />
+                                </TextBlock>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Grid>
