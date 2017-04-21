@@ -6,14 +6,236 @@
       xmlns:local="clr-namespace:WeatherApp.Views"
       xmlns:vm="clr-namespace:WeatherApp.ViewModels"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="600" d:DesignWidth="800"
       Title="CityWeatherPage">
 
     <Page.DataContext>
         <vm:CityWeatherPageViewModel />
     </Page.DataContext>
-    
+
+    <Page.Resources>
+        <Style x:Key="ContentWeatherGrid" TargetType="Grid">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <SolidColorBrush Color="MediumPurple" Opacity="0.25" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Storyboard x:Key="PageLoadedGridAnimation">
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
+                                              Storyboard.TargetName="CurrentWeatherGrid">
+                <EasingThicknessKeyFrame KeyTime="0" Value="40,20,800,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.65" Value="40,20,40,0"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
+                                              Storyboard.TargetName="ForecastWeatherGrid">
+                <EasingThicknessKeyFrame KeyTime="0" Value="40,20,800,20"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.8" Value="40,20,40,20"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
+                                              Storyboard.TargetName="HourWeatherGrid">
+                <EasingThicknessKeyFrame KeyTime="0" Value="40,0,800,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:1" Value="40,0,40,0"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
+                                              Storyboard.TargetName="ShowDetailGrid">
+                <EasingThicknessKeyFrame KeyTime="0" Value="40,0,800,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.15" Value="40,0,40,0"/>
+            </ThicknessAnimationUsingKeyFrames>
+
+        </Storyboard>
+
+        <Style x:Key="BorderRightTransparent" TargetType="Border">
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0,9" MappingMode="RelativeToBoundingBox"
+                                                         StartPoint="1,0">
+                        <GradientStop />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0 0 2 0" />
+            <Setter Property="Margin" Value="0 10" />
+        </Style>
+        
+        <Storyboard x:Key="HighlightShowDetailInfoStoryboard">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="ShowDetailGrid">
+                <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#FFE25151"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+       
+        <Storyboard x:Key="UnhighlightShowDetailInfoStoryboard">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="ShowDetailGrid">
+                <EasingColorKeyFrame KeyTime="0:0:0.1" Value="MediumPurple"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+        
+    </Page.Resources>
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageLoadedGridAnimation}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="ShowDetailGrid">
+            <BeginStoryboard Storyboard="{StaticResource HighlightShowDetailInfoStoryboard}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="ShowDetailGrid">
+            <BeginStoryboard Storyboard="{StaticResource UnhighlightShowDetailInfoStoryboard}"/>
+        </EventTrigger>
+    </Page.Triggers>
     <Grid>
 
+        <Grid x:Name="BackgroundImage">
+            <Grid.Background>
+                <ImageBrush ImageSource="/WeatherApp;component/Assets/appbckg1.jpg" />
+            </Grid.Background>
+
+            <Grid.Effect>
+                <BlurEffect />
+            </Grid.Effect>
+        </Grid>
+
+        <StackPanel x:Name="Content">
+
+            <Grid Height="135"
+                  Margin="40 20 40 0"
+                  VerticalAlignment="Top"
+                  Style="{StaticResource ContentWeatherGrid}"
+                  x:Name="CurrentWeatherGrid">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Margin="20">
+                    <TextBlock Text="Wojkowice"
+                               Foreground="White"
+                               FontSize="25"/>
+                    <TextBlock Text="Polska"
+                               Foreground="Yellow"
+                               FontSize="19" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="52.17*"
+                                   Foreground="White"
+                                   FontSize="14"
+                                   FontWeight="Light"/>
+                        <TextBlock Text="52.17*"
+                                   Margin="10 0"
+                                   Foreground="White"
+                                   FontSize="14"
+                                   FontWeight="Light"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <Border Style="{StaticResource BorderRightTransparent}"/>
+
+                <Grid Grid.Column="1">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="18*C"
+                                   FontSize="50"
+                                   Foreground="Yellow"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top" />
+
+                        <TextBlock Text="Odczuwalne: 24*C"
+                                   Foreground="Pink"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock VerticalAlignment="Bottom"
+                                   TextWrapping="Wrap"
+                                   Margin="0 20"
+                                   TextAlignment="Center"
+                                   Foreground="Aqua">
+                            <Run Text="Ostatnia aktualizacja:"/>
+                            <Run Text="2017-04-21 16:06"
+                                 Foreground="LightGray"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource BorderRightTransparent}" />
+
+                    <StackPanel Grid.Column="1"
+                                Margin="15 10"
+                                VerticalAlignment="Center">
+
+                        <TextBlock Text="Wiatr: 16.6 km/h"
+                                   Foreground="LightGreen"
+                                   FontSize="20"/>
+                        <TextBlock Text="Kierunek wiatru: E | 281*"
+                                   Foreground="LightGray"/>
+                        <TextBlock Margin="0 10"
+                                   Foreground="LightGreen"
+                                   FontSize="20"
+                                   Text="Ciśnienie: 1028 hPa" />
+                    </StackPanel>
+
+                    <Border Style="{StaticResource BorderRightTransparent}"
+                            Grid.Column="1"/>
+
+                    <StackPanel Grid.Column="2"
+                                Margin="10 10"
+                                VerticalAlignment="Center">
+
+                        <TextBlock Text="Widoczność: 15,2 km"
+                                   Foreground="AntiqueWhite"
+                                   FontSize="16"/>
+                        <TextBlock Text="Wilgotność: 52%"
+                                   Foreground="LimeGreen"
+                                   FontSize="16"/>
+                        <TextBlock Text="Zachmurzenie: 81%"
+                                   Foreground="AliceBlue"
+                                   FontSize="16"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="ShowDetailGrid" 
+                  Style="{StaticResource ContentWeatherGrid}"
+                  Margin="40 0"
+                  Height="20"
+                  VerticalAlignment="Bottom"
+                  Cursor="Hand">
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="Pokaż szczegółowe informacje"
+                               Margin="0 0 2 0"
+                               Foreground="Beige"/>
+                    <Image Source="/WeatherApp;component/Assets/rightarrow.png" 
+                           RenderTransformOrigin="0.5,0.5"
+                           Margin="2">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90"/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                </StackPanel>
+
+            </Grid>
+
+            <Grid Height="180"
+                  Margin="40 20"
+                  Style="{StaticResource ContentWeatherGrid}"
+                  x:Name="ForecastWeatherGrid">
+
+            </Grid>
+
+            <Grid Height="150"
+                  Margin="40 0"
+                  Style="{StaticResource ContentWeatherGrid}"
+                  x:Name="HourWeatherGrid"/>
+        </StackPanel>
     </Grid>
 </Page>
