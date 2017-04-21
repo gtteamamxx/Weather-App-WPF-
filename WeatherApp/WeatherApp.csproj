@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\ShowDetailGridHeightAnimationBehavior.cs" />
     <Compile Include="Behaviors\StackPanelFramesAnimationBehavior.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Models\Application\MVVMMessagerService.cs" />
@@ -182,7 +183,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\sunrise_line.png" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
@@ -206,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\rightarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\sun.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
