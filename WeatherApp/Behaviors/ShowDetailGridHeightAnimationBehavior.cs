@@ -37,22 +37,22 @@ namespace WeatherApp.Behaviors
             {
                 var arrowImage = controlsList.First(p => p is Image) as Image;
                 return arrowImage.FindResource(_isOpened ?
-                "RotateImageAsUpArrowFromDownArrow" : "RotateImageAsDownArrowFromUpArrow") as Storyboard; ;
+                    "RotateImageAsUpArrowFromDownArrow" : "RotateImageAsDownArrowFromUpArrow") as Storyboard; ;
             }
 
             DoubleAnimation getHeightAnimation()
             {
                 return new DoubleAnimation(
-                    _isOpened ? 20 : 150, 
-                    _isOpened ? 150 : 20, 
-                    new Duration(TimeSpan.FromSeconds(0.15)));
+                    _isOpened ? 20 : 330, 
+                    _isOpened ? 330 : 20, 
+                    new Duration(TimeSpan.FromSeconds(0.2)));
             }
 
             void ChangeTextOnTextInfo()
             {
                 var infoTextBlock = (controlsList.First(p => p is TextBlock) as TextBlock);
                 var stackPanelWithResources = (AssociatedObject.Children[0] as StackPanel);
-                infoTextBlock.Style = stackPanelWithResources.Resources[_isOpened ? (dynamic)"ShowInfoText" : "HideInfoText"];
+                infoTextBlock.Style = stackPanelWithResources.Resources[_isOpened ? (dynamic)"HideInfoText" : "ShowInfoText"];
             }
         }
 

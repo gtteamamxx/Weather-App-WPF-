@@ -1,5 +1,4 @@
-﻿using APIXULib;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Models.Application;
 using WeatherApp.Models.Internet;
+using WeatherApp.Models.Weather;
 using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
@@ -109,7 +109,10 @@ namespace WeatherApp.ViewModels
             });
             MVVMMessagerService.SendMessage(typeof(ShowWeatherOfCityMessage), new ShowWeatherOfCityMessage()
             {
-                City = _temporarySelectedCity
+                WeatherModel = new WeatherModel()
+                {
+                    location = _temporarySelectedCity
+                }
             });
         }
 

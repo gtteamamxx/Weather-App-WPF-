@@ -7,7 +7,15 @@
     
     <Application.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        
+        <converters:StringToStringWithGradeConverter x:Key="StringToStringWithGradeConverter" />
+        <converters:StringToStringWiithGradeAndCTempConverter x:Key="StringToStringWiithGradeAndCTempConverter" />
+        <converters:StringToStringWithKmphConverter x:Key="StringToStringWithKmphConverter" />
+        <converters:StringToStringWithHpaConverter x:Key="StringToStringWithHpaConverter" />
+        <converters:StringToStringWithKmConverter x:Key="StringToStringWithKmConverter" />
+        <converters:IntToPercentConverter x:Key="IntToPercentConverter" />
+        <converters:StringToStringWithMmConverter x:Key="StringToStringWithMmConverter" />
+        <converters:EnglishHourToUTCHourConverter x:Key="EnglishHourToUTCHourConverter" />
+
         <Style x:Key="TextBlockHeaderStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="32" />

@@ -16,10 +16,11 @@
     </Page.DataContext>
 
     <Page.Resources>
+        
         <Style x:Key="ContentWeatherGrid" TargetType="Grid">
             <Setter Property="Background">
                 <Setter.Value>
-                    <SolidColorBrush Color="MediumPurple" Opacity="0.25" />
+                    <SolidColorBrush Color="MediumPurple" Opacity="0.4" />
                 </Setter.Value>
             </Setter>
         </Style>
@@ -43,7 +44,7 @@
             <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
                                               Storyboard.TargetName="ShowDetailGrid">
                 <EasingThicknessKeyFrame KeyTime="0" Value="40,0,800,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.15" Value="40,0,40,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.65" Value="40,0,40,0"/>
             </ThicknessAnimationUsingKeyFrames>
 
         </Storyboard>
@@ -74,19 +75,93 @@
             </ColorAnimationUsingKeyFrames>
         </Storyboard>
 
-        <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Effect">
+        <Style TargetType="ContentPresenter" x:Key="HoursListContentPresenter">
+            <Setter Property="ContentTemplate">
                 <Setter.Value>
-                    <DropShadowEffect Opacity="0.5" />
+                    <DataTemplate>
+                        <Grid>
+                            <ListView Margin="5"
+                                      BorderBrush="Transparent"
+                                      BorderThickness="0"
+                                      Background="Transparent">
+                                
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"
+                                                   VerticalAlignment="Center" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Height="150"
+                                              Width="180"
+                                              Margin="2">
+
+                                            <Grid.Resources>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White" />
+                                                </Style>
+                                            </Grid.Resources>
+
+                                            <Grid.Background>
+                                                <SolidColorBrush Color="Black" Opacity="0.4" />
+                                            </Grid.Background>
+
+                                            <StackPanel Margin="5 0 5 0">
+                                                <TextBlock Text="00:00"
+                                                           HorizontalAlignment="Center"
+                                                           FontSize="20"
+                                                           Foreground="LightGray" />
+                                                <Separator />
+                                                <TextBlock Text="3.9*C"
+                                                           Foreground="Yellow"
+                                                           FontSize="20"
+                                                           HorizontalAlignment="Center" />
+
+                                                <TextBlock Text="Odczuwalna: 2.4*C"
+                                                           Foreground="Pink"
+                                                           FontSize="10"
+                                                           HorizontalAlignment="Center" />
+                                                <Grid>
+                                                    <TextBlock Text="Opady: 0.0mm"
+                                                               FontSize="11"
+                                                               Foreground="LightGreen"/>
+                                                    <TextBlock Text="Wilgotność: 67%" 
+                                                               HorizontalAlignment="Right"
+                                                               Foreground="LightGreen"
+                                                               FontSize="11"/>
+                                                </Grid>
+
+                                                <Grid>
+                                                    <TextBlock Text="Wiatr: 16.2 km/h"
+                                                               FontSize="11"
+                                                               Foreground="Azure"/>
+                                                    <TextBlock Text="Kierunek: WSW"
+                                                               HorizontalAlignment="Right"
+                                                               FontSize="11"
+                                                               Foreground="Azure"/>
+                                                </Grid>
+                                                <TextBlock Text="Ciśnienie: 1027 hPa"
+                                                           Foreground="Beige"/>
+                                                <TextBlock Text="Zachmurzenie: 100%"
+                                                           Foreground="Beige"/>
+                                                <TextBlock Text="Widoczność: 11.7 km"
+                                                           Foreground="Beige"/>
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </DataTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
     </Page.Resources>
+
     <Page.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard Storyboard="{StaticResource PageLoadedGridAnimation}"/>
-        </EventTrigger>
         <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="ShowDetailGrid">
             <BeginStoryboard Storyboard="{StaticResource HighlightShowDetailInfoStoryboard}"/>
         </EventTrigger>
@@ -94,402 +169,541 @@
             <BeginStoryboard Storyboard="{StaticResource UnhighlightShowDetailInfoStoryboard}"/>
         </EventTrigger>
     </Page.Triggers>
-    <Grid>
 
-        <Grid x:Name="BackgroundImage">
-            <Grid.Background>
-                <ImageBrush ImageSource="/WeatherApp;component/Assets/appbckg1.jpg" />
-            </Grid.Background>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding PageLoadedCommand}" 
+                                   CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  Margin="0 0 15 0">
 
-            <Grid.Effect>
-                <BlurEffect />
-            </Grid.Effect>
-        </Grid>
+        <ScrollViewer.Background>
+            <ImageBrush ImageSource="/WeatherApp;component/Assets/appbckg4.jpg" />
+        </ScrollViewer.Background>
 
-        <StackPanel x:Name="Content">
+        <Grid Margin="0 40 0 40">
+            <StackPanel x:Name="Content">
 
-            <Grid Height="135"
-                  Margin="40 20 40 0"
-                  VerticalAlignment="Top"
-                  Style="{StaticResource ContentWeatherGrid}"
-                  x:Name="CurrentWeatherGrid">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Margin="20">
-                    <TextBlock Text="Wojkowice"
-                               Foreground="White"
-                               FontSize="25"/>
-                    <TextBlock Text="Polska"
-                               Foreground="Yellow"
-                               FontSize="19" />
-
-                    <StackPanel Orientation="Horizontal">
-
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}" >
-                                <Setter Property="Foreground" Value="White" />
-                                <Setter Property="FontSize" Value="14" />
-                                <Setter Property="FontWeight" Value="Light" />
-                            </Style>
-                        </StackPanel.Resources>
-
-                        <TextBlock Text="52.17*" />
-
-                        <TextBlock Text="52.17*"
-                                   Margin="10 0" />
-                    </StackPanel>
-
-                </StackPanel>
-
-                <Border Style="{StaticResource BorderRightTransparent}"/>
-
-                <Grid Grid.Column="1">
+                <!-- Current Weather -->
+                <Grid Height="135"
+                      Margin="40 20 40 0"
+                      VerticalAlignment="Top"
+                      Style="{StaticResource ContentWeatherGrid}"
+                      x:Name="CurrentWeatherGrid">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="140" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel>
-                        <TextBlock Text="18*C"
-                                   FontSize="50"
+                    <StackPanel Margin="20 20 0 0">
+                        <TextBlock Text="{Binding Weather.location.name}"
+                                   Width="150"
+                                   TextWrapping="Wrap"
+                                   Foreground="White"
+                                   FontSize="16"/>
+                        <TextBlock Text="{Binding Weather.location.country}"
                                    Foreground="Yellow"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Top" />
+                                   FontSize="19" />
 
-                        <TextBlock Text="Odczuwalne: 24*C"
-                                   Foreground="Pink"
-                                   HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
 
-                        <TextBlock VerticalAlignment="Bottom"
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}" >
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontSize" Value="14" />
+                                    <Setter Property="FontWeight" Value="Light" />
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <TextBlock>
+                                <Run Text="{Binding Weather.location.lon, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" />
+                                <Run/>
+                                <Run Text="{Binding Weather.location.lat, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" />
+                            </TextBlock>
+
+                        </StackPanel>
+
+                        <TextBlock Text="Dzisiaj"
+                                   Foreground="Red"
+                                   FontSize="20"/>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource BorderRightTransparent}"/>
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="{Binding Weather.current.temp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                       FontSize="50"
+                                       Foreground="Yellow"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Top" />
+
+                            <TextBlock Foreground="Pink"
+                                       HorizontalAlignment="Center">
+                                <Run Text="Odczuwalne:" />
+                                <Run Text="{Binding Weather.current.feelslike_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" />
+                            </TextBlock>
+
+                            <TextBlock VerticalAlignment="Bottom"
                                    TextWrapping="Wrap"
                                    Margin="0 20"
                                    TextAlignment="Center"
                                    Foreground="Aqua">
                             <Run Text="Ostatnia aktualizacja:"/>
-                            <Run Text="2017-04-21 16:06"
+                            <Run Text="{Binding Weather.current.last_updated}"
                                  Foreground="LightGray"/>
-                        </TextBlock>
-                    </StackPanel>
+                            </TextBlock>
+                        </StackPanel>
 
-                    <Border Style="{StaticResource BorderRightTransparent}" />
+                        <Border Style="{StaticResource BorderRightTransparent}" />
 
-                    <StackPanel Grid.Column="1"
-                                Margin="15 10"
-                                VerticalAlignment="Center">
+                        <StackPanel Grid.Column="1"
+                                    Margin="15 10"
+                                    VerticalAlignment="Center">
 
-                        <TextBlock Text="Wiatr: 16.6 km/h"
-                                   Foreground="LightGreen"
-                                   FontSize="20"/>
-                        <TextBlock Text="Kierunek wiatru: E | 281*"
-                                   Foreground="LightGray"/>
-                        <TextBlock Margin="0 10"
-                                   Foreground="LightGreen"
-                                   FontSize="20"
-                                   Text="Ciśnienie: 1028 hPa" />
-                    </StackPanel>
+                            <TextBlock 
+                                       Foreground="LightGreen"
+                                       FontSize="20">
+                                <Run Text="Wiatr:"/>
+                                <Run Text="{Binding Weather.current.wind_kph,Converter={StaticResource StringToStringWithKmphConverter}}" />
+                            </TextBlock>
+                            <TextBlock Foreground="LightGray">
+                                <Run Text="Kierunek wiatru:" />
+                                <Run Text="{Binding Weather.current.wind_dir}" />
+                                <Run Text="|" />
+                                <Run Text="{Binding Weather.current.wind_degree,Converter={StaticResource StringToStringWithGradeConverter}}" />
+                            </TextBlock>
+                            <TextBlock Margin="0 10"
+                                       Foreground="LightGreen"
+                                       FontSize="20">
+                                <Run Text="Ciśnienie:" />
+                                <Run Text="{Binding Weather.current.pressure_in}" />
+                            </TextBlock>
+                        </StackPanel>
 
-                    <Border Style="{StaticResource BorderRightTransparent}"
-                            Grid.Column="1"/>
+                        <Border Style="{StaticResource BorderRightTransparent}"
+                                Grid.Column="1"/>
 
-                    <StackPanel Grid.Column="2"
-                                Margin="10 10"
-                                VerticalAlignment="Center">
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}">
-                                <Setter Property="FontSize" Value="16" />
-                            </Style>
-                        </StackPanel.Resources>
-                        
-                        <TextBlock Text="Widoczność: 15,2 km"
-                                   Foreground="AntiqueWhite" />
-                        
-                        <TextBlock Text="Wilgotność: 52%"
-                                   Foreground="LimeGreen" />
-                        
-                        <TextBlock Text="Zachmurzenie: 81%"
-                                   Foreground="AliceBlue" />
-                      
-                        <TextBlock Text="Opady: 0.15mm"
-                                   Foreground="White" />
-                    </StackPanel>
-                </Grid>
-            </Grid>
-
-            <Grid x:Name="ShowDetailGrid" 
-                  Style="{StaticResource ContentWeatherGrid}"
-                  Margin="40 0"
-                  Height="150"
-                  VerticalAlignment="Bottom"
-                  Cursor="Hand">
-
-                <i:Interaction.Behaviors>
-                    <behaviors:ShowDetailGridHeightAnimationBehavior />
-                </i:Interaction.Behaviors>
-
-                <Grid.Resources>
-                    <Style x:Key="ColumnHeaderTextBlockStyle" TargetType="TextBlock">
-                        <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="VerticalAlignment" Value="Top" />
-                        <Setter Property="Margin" Value="10 0" />
-                        <Setter Property="FontWeight" Value="Light" />
-                        <Setter Property="Foreground" Value="Beige" />
-                    </Style>
-                </Grid.Resources>
-
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top">
-
-                    <StackPanel.Resources>
-                        <Style x:Key="ShowInfoText" TargetType="TextBlock">
-                            <Setter Property="Text" Value="Pokaż szczegółowe informacje" />
-                        </Style>
-                        <Style x:Key="HideInfoText" TargetType="TextBlock">
-                            <Setter Property="Text" Value="Ukryj szczegółowe informacje" />
-                        </Style>
-                    </StackPanel.Resources>
-                    
-                    <TextBlock Margin="0 0 2 0"
-                               Foreground="Beige"
-                               Style="{StaticResource ShowInfoText}" />
-
-                    <Image Source="/WeatherApp;component/Assets/rightarrow.png" 
-                           RenderTransformOrigin="0.5,0.5"
-                           Width="20"
-                           Margin="2">
-
-                        <Image.Resources>
-                            <Storyboard x:Key="RotateImageAsUpArrowFromDownArrow">
-                                <DoubleAnimation From="90" To="-90" Duration="0:0:0.5"
-                                                 Storyboard.TargetName="ArrowImageRotateTransform"
-                                                 Storyboard.TargetProperty="Angle" />
-                            </Storyboard>
-
-                            <Storyboard x:Key="RotateImageAsDownArrowFromUpArrow">
-                                <DoubleAnimation From="-90" To="90" Duration="0:0:0.5"
-                                                 Storyboard.TargetName="ArrowImageRotateTransform"
-                                                 Storyboard.TargetProperty="Angle" />
-                            </Storyboard>
-                        </Image.Resources>
-                        
-                        <Image.RenderTransform>
-                            <TransformGroup>
-                                <RotateTransform x:Name="ArrowImageRotateTransform" Angle="90"/>
-                            </TransformGroup>
-                        </Image.RenderTransform>
-                        
-                    </Image>
-                </StackPanel>
-
-                <Grid Margin="0 20 0 0">
-                    
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel>
-
-                        <TextBlock Text="Temperatura"
-                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
-
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
-                                    Margin="10">
-
+                        <StackPanel Grid.Column="2"
+                                    Margin="10 10"
+                                    VerticalAlignment="Center">
                             <StackPanel.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="20" />
-                                    <Setter Property="TextAlignment" Value="Center" />
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}">
+                                    <Setter Property="FontSize" Value="16" />
                                 </Style>
                             </StackPanel.Resources>
 
-                            <StackPanel Margin="5">
-                                <TextBlock Text="15.1 *C"
-                                           Foreground="Yellow"/>
-                                <TextBlock Text="Minimalna"
-                                           FontSize="11"
-                                           Foreground="White"/>
-                            </StackPanel>
-                            <StackPanel Margin="5">
-                                <TextBlock Text="15.1*C"
-                                           Foreground="Green"/>
-                                <TextBlock Text="Średnia"
-                                           FontSize="11"
-                                           Foreground="White"/>
-                            </StackPanel>
-                            <StackPanel Margin="5">
-                                <TextBlock Text="15.1*C"
-                                           Foreground="Orange"/>
-                                <TextBlock Text="Najwyższa"
-                                           FontSize="11"
-                                           Foreground="White"/>
-                            </StackPanel>
+                            <TextBlock Foreground="AntiqueWhite">
+                                <Run Text="Widoczność:" />
+                                <Run Text="{Binding Weather.current.vis_km, Converter={StaticResource StringToStringWithKmConverter}}" />
+                            </TextBlock>
+                            <TextBlock Foreground="LimeGreen">
+                                <Run Text="Wilgotność:" />
+                                <Run Text="{Binding Weather.current.humidity, Converter={StaticResource IntToPercentConverter}}" />
+                            </TextBlock>
+                            <TextBlock Foreground="AliceBlue">
+                                <Run Text="Zachmurzenie:" />
+                                <Run Text="{Binding Weather.current.cloud, Converter={StaticResource IntToPercentConverter}}" />
+                            </TextBlock>
+                            <TextBlock Foreground="White">
+                                <Run Text="Opady:" />
+                                <Run Text="{Binding Weather.current.precip_in, Converter={StaticResource StringToStringWithMmConverter}}" />
+                            </TextBlock>
                         </StackPanel>
+                    </Grid>
+                </Grid>
 
-                        <Border BorderThickness="1"
-                                Margin="20 0">
+                <!-- Detail of current weather -->
+                <Grid x:Name="ShowDetailGrid" 
+                      Style="{StaticResource ContentWeatherGrid}"
+                      Margin="40 0"
+                      Height="20"
+                      VerticalAlignment="Bottom"
+                      Cursor="Hand">
 
-                            <Border.Effect>
-                                <DropShadowEffect Opacity="0.5" />
-                            </Border.Effect>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <i:Interaction.Behaviors>
+                        <behaviors:ShowDetailGridHeightAnimationBehavior />
+                    </i:Interaction.Behaviors>
 
-                            <Border.BorderBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.35">
-                                    <LinearGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                                            <RotateTransform Angle="-90" CenterY="0.5" CenterX="0.5"/>
-                                            <TranslateTransform/>
-                                        </TransformGroup>
-                                    </LinearGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFFF003A" Offset="1"/>
-                                    <GradientStop Color="#FFFFFF00" Offset="0.5" />
-                                    <GradientStop Color="#FF1DFFEA" Offset="0.000"/>
-                                </LinearGradientBrush>
-                            </Border.BorderBrush>
+                    <Grid.Resources>
+                        <Style x:Key="ColumnHeaderTextBlockStyle" TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="Margin" Value="10 0" />
+                            <Setter Property="FontWeight" Value="Light" />
+                            <Setter Property="Foreground" Value="Beige" />
+                        </Style>
+                    </Grid.Resources>
 
-                        </Border>
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top">
 
-                    </StackPanel>
+                        <StackPanel.Resources>
+                            <Style x:Key="ShowInfoText" TargetType="TextBlock">
+                                <Setter Property="Text" Value="Pokaż szczegółowe informacje" />
+                            </Style>
+                            <Style x:Key="HideInfoText" TargetType="TextBlock">
+                                <Setter Property="Text" Value="Ukryj szczegółowe informacje" />
+                            </Style>
+                        </StackPanel.Resources>
 
-                    <Border Style="{StaticResource BorderRightTransparent}" />
+                        <TextBlock Margin="0 0 2 0"
+                                   Foreground="Beige"
+                                   Style="{StaticResource ShowInfoText}" />
 
-                    <Grid Grid.Column="1">
-                        <TextBlock Text="Astro"
-                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
+                        <Image Source="/WeatherApp;component/Assets/rightarrow.png" 
+                               RenderTransformOrigin="0.5,0.5"
+                               Height="15"
+                               Margin="2">
 
-                        <Image Source="/WeatherApp;component/Assets/sunrise_line.png"
-                               Margin="0 -10 0 0"
-                               Width="100"
-                               RenderTransformOrigin="0.5,0.5">
-                            <Image.BitmapEffect>
-                                <DropShadowBitmapEffect Color="Yellow" 
-                                                        Softness="0.45"
-                                                        Direction="300"/>
-                            </Image.BitmapEffect>
+                            <Image.Resources>
+                                <Storyboard x:Key="RotateImageAsUpArrowFromDownArrow">
+                                    <DoubleAnimation From="90" To="-90" Duration="0:0:0.5"
+                                                     Storyboard.TargetName="ArrowImageRotateTransform"
+                                                     Storyboard.TargetProperty="Angle" />
+                                </Storyboard>
+
+                                <Storyboard x:Key="RotateImageAsDownArrowFromUpArrow">
+                                    <DoubleAnimation From="-90" To="90" Duration="0:0:0.5"
+                                                     Storyboard.TargetName="ArrowImageRotateTransform"
+                                                     Storyboard.TargetProperty="Angle" />
+                                </Storyboard>
+                            </Image.Resources>
 
                             <Image.RenderTransform>
                                 <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform Angle="-51.087"/>
-                                    <TranslateTransform/>
+                                    <RotateTransform x:Name="ArrowImageRotateTransform" Angle="90"/>
                                 </TransformGroup>
                             </Image.RenderTransform>
+
                         </Image>
+                    </StackPanel>
 
-                        <Image Source="/WeatherApp;component/Assets/sun.png"
-                               Width="20"
-                               Height="20"
-                               Margin="0 0 35 50">
-                            <Image.BitmapEffect>
-                                <DropShadowBitmapEffect Opacity="0.4" />
-                            </Image.BitmapEffect>
-                        </Image>
+                    <Grid Grid.Row="1"
+                          Margin="0 20 0 0"
+                          Height="110">
 
-                        <StackPanel HorizontalAlignment="Left"
-                                    VerticalAlignment="Bottom"
-                                    Margin="40 25">
-                            <TextBlock Text="6:24"
-                                       FontSize="16"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="Wschód"
-                                       Foreground="White"/>
-                        </StackPanel>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                        <StackPanel HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Margin="40 25">
-                            <TextBlock Text="20:24"
-                                       FontSize="16"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="Zachód"
-                                       Foreground="White"/>
-                        </StackPanel>
-                    </Grid>
+                        <StackPanel>
 
-                    <Border Style="{StaticResource BorderRightTransparent}"
-                            Grid.Column="1"/>
-
-                    <Grid Grid.Column="2">
-                        <TextBlock Text="Inne"
-                                   Style="{StaticResource ColumnHeaderTextBlockStyle}" />
-                        <StackPanel Margin="15"
-                                    VerticalAlignment="Center">
-
-                            <StackPanel.Resources>
-                                <Style TargetType="{x:Type Image}">
-                                    <Setter Property="Effect">
-                                        <Setter.Value>
-                                            <DropShadowEffect Color="White" Opacity="0.25" Direction="-35" ShadowDepth="3" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="Margin" Value="-3 0 0 0" />
-                                    <Setter Property="Width" Value="20" />
-                                    <Setter Property="Height" Value="20" />
-                                </Style>
-                            </StackPanel.Resources>
-
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/WeatherApp;component/Assets/wind.png" />
-
-                                <TextBlock Foreground="White"
-                                           Margin="10 0">
-                                    <Run Text="Wiatr:" />
-                                    <Run Text="16.6"/>
-                                    <Run Text=" - " />
-                                    <Run Text="22.2 kmh/h" />
-                                </TextBlock>
-                            </StackPanel>
+                            <TextBlock Text="Temperatura"
+                                       Style="{StaticResource ColumnHeaderTextBlockStyle}" />
 
                             <StackPanel Orientation="Horizontal"
-                                        Margin="0 10 0 0">
-                                <Image Source="/WeatherApp;component/Assets/visibility.png" />
-                                <TextBlock Foreground="White"
-                                           Margin="10 0">
-                                    <Run Text="Widoczność:" />
-                                    <Run Text="15.2"/>
-                                    <Run Text=" - " />
-                                    <Run Text="17.9 km" />
-                                </TextBlock>
+                                        HorizontalAlignment="Center"
+                                        Margin="10">
+
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="20" />
+                                        <Setter Property="TextAlignment" Value="Center" />
+                                    </Style>
+
+                                    <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource ColumnHeaderTextBlockStyle}">
+                                        <Setter Property="FontSize" Value="11" />
+                                        <Setter Property="Foreground" Value="White" />
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.mintemp_c,
+                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                               Foreground="Yellow"/>
+                                    <TextBlock Text="Minimalna"
+                                               Style="{StaticResource HeaderTextBlock}"/>
+                                </StackPanel>
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.avgtemp_c,
+                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                               Foreground="LightGreen"/>
+                                    <TextBlock Text="Średnia"
+                                               Style="{StaticResource HeaderTextBlock}"/>
+                                </StackPanel>
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.maxtemp_c,
+                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                               Foreground="Orange"/>
+                                    <TextBlock Text="Najwyższa"
+                                               Style="{StaticResource HeaderTextBlock}"/>
+                                </StackPanel>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0 10">
-                                <Image Source="/WeatherApp;component/Assets/humidity.png" />
-                                <TextBlock Foreground="White"
-                                           Margin="10 0">
-                                    <Run Text="Wilgotność:" />
-                                    <Run Text="52%"/>
-                                    <Run Text=" - " />
-                                    <Run Text="69%" />
-                                </TextBlock>
-                            </StackPanel>
+                            <Border BorderThickness="1"
+                                    Margin="20 0">
+
+                                <Border.Effect>
+                                    <DropShadowEffect Opacity="0.5" />
+                                </Border.Effect>
+
+                                <Border.BorderBrush>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.35">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                                <RotateTransform Angle="-90" CenterY="0.5" CenterX="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FFFF003A" Offset="1"/>
+                                        <GradientStop Color="#FFFFFF00" Offset="0.5" />
+                                        <GradientStop Color="#FF1DFFEA" Offset="0.000"/>
+                                    </LinearGradientBrush>
+                                </Border.BorderBrush>
+
+                            </Border>
+
                         </StackPanel>
+
+                        <Border Style="{StaticResource BorderRightTransparent}" />
+
+                        <Grid Grid.Column="1">
+
+                            <Image Source="/WeatherApp;component/Assets/sunrise_line.png"
+                                   Margin="0 -10 0 0"
+                                   Width="100"
+                                   RenderTransformOrigin="0.5,0.5">
+                                <Image.BitmapEffect>
+                                    <DropShadowBitmapEffect Color="Yellow" 
+                                                            Softness="0.45"
+                                                            Direction="300"/>
+                                </Image.BitmapEffect>
+
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <SkewTransform/>
+                                        <RotateTransform Angle="-51.087"/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+
+                            <Image Source="/WeatherApp;component/Assets/sun.png"
+                                   Width="20"
+                                   Height="20"
+                                   Margin="0 0 35 50">
+                                <Image.BitmapEffect>
+                                    <DropShadowBitmapEffect Opacity="0.4" />
+                                </Image.BitmapEffect>
+                            </Image>
+
+                            <StackPanel HorizontalAlignment="Left"
+                                        VerticalAlignment="Bottom"
+                                        Margin="40 20">
+                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunrise,
+                                        Converter={StaticResource EnglishHourToUTCHourConverter}}"
+                                           FontSize="16"
+                                           TextAlignment="Center"/>
+                                <TextBlock Text="Wschód"
+                                           Foreground="White"/>
+                            </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Margin="40 20">
+                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunset,
+                                        Converter={StaticResource EnglishHourToUTCHourConverter}}"
+                                           FontSize="16"
+                                           TextAlignment="Center"/>
+                                <TextBlock Text="Zachód"
+                                           Foreground="White"/>
+                            </StackPanel>
+
+                            <TextBlock Text="Astro"
+                                       Style="{StaticResource ColumnHeaderTextBlockStyle}" />
+                        </Grid>
+
+                        <Border Style="{StaticResource BorderRightTransparent}"
+                                Grid.Column="1"/>
+
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Text="Inne"
+                                       Style="{StaticResource ColumnHeaderTextBlockStyle}" />
+                            
+                            <StackPanel Margin="15 0"
+                                        Grid.Row="1"
+                                        VerticalAlignment="Center">
+    
+                                <StackPanel.Resources>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect Color="White" Opacity="0.25" Direction="-35" ShadowDepth="3" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Margin" Value="-3 0 0 0" />
+                                        <Setter Property="Width" Value="20" />
+                                        <Setter Property="Height" Value="20" />
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/WeatherApp;component/Assets/wind.png" />
+
+                                    <TextBlock Foreground="White"
+                                               Margin="10 0">
+                                        <Run Text="Wiatr:" />
+                                        <Run Text="{Binding Weather.current.wind_kph}"/>
+                                        <Run Text=" - " />
+                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.maxwind_kph,
+                                            Converter={StaticResource StringToStringWithKmphConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0 10 0 0">
+                                    <Image Source="/WeatherApp;component/Assets/visibility.png" />
+                                    <TextBlock Foreground="White"
+                                               Margin="10 0">
+                                        <Run Text="Widoczność:" />
+                                        <Run Text="{Binding Weather.current.vis_km}"/>
+                                        <Run Text=" - " />
+                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.avgvis_km,
+                                            Converter={StaticResource StringToStringWithKmConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0 10">
+                                    <Image Source="/WeatherApp;component/Assets/humidity.png" />
+                                    <TextBlock Foreground="White"
+                                               Margin="10 0">
+                                        <Run Text="Wilgotność:" />
+                                        <Run Text="{Binding Weather.current.humidity, Converter=
+                                            {StaticResource IntToPercentConverter}}"/>
+                                        <Run Text="/" />
+                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.avghumidity, Converter=
+                                            {StaticResource IntToPercentConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
+                    
+                    <Separator Grid.Row="2" VerticalAlignment="Top" />
+                    
+                    <ContentPresenter Grid.Row="2"
+                                      Height="175" 
+                                      Style="{StaticResource HoursListContentPresenter}" />
                 </Grid>
-            </Grid>
 
-            <Grid Height="180"
-                  Margin="40 20"
-                  Style="{StaticResource ContentWeatherGrid}"
-                  x:Name="ForecastWeatherGrid">
+                <!-- Forecast Weather -->
+                <Grid Height="200"
+                      Margin="40 20"
+                      Style="{StaticResource ContentWeatherGrid}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      x:Name="ForecastWeatherGrid">
 
-            </Grid>
+                    <ListView Background="Transparent"
+                              BorderBrush="Transparent"
+                              BorderThickness="0">
+                        <ListView.Resources>
+                            <Style  TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="White" />
+                            </Style>
+                        </ListView.Resources>
 
-            <Grid Height="150"
-                  Margin="40 0"
-                  Style="{StaticResource ContentWeatherGrid}"
-                  x:Name="HourWeatherGrid"/>
-        </StackPanel>
-    </Grid>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"
+                                           VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="150"
+                                      Height="190"
+                                      Margin="10 0 10 0">
+                                    <Grid.Background>
+                                        <SolidColorBrush Color="Blue" Opacity="0.3" />
+                                    </Grid.Background>
+
+                                    <StackPanel>
+                                        <TextBlock Text="2017-04-22" 
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="18"
+                                                   FontWeight="Light"/>
+                                        <Separator />
+                                        <TextBlock Text="9*C"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0 -4 0 0"
+                                                   FontSize="32"
+                                                   Foreground="Yellow"/>
+                                        <TextBlock Text="Odczuwalne: 4*C"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="Pink" />
+                                        <Grid Margin="5 0">
+                                            <TextBlock Text="Min: 1*C"
+                                                       Foreground="Yellow" />
+                                            <TextBlock Text="Wschód: 6:11"
+                                                       HorizontalAlignment="Right"/>
+                                        </Grid>
+                                        <Grid Margin="5 0">
+                                            <TextBlock Text="Max: 13*C"
+                                                       Foreground="Orange" />
+                                            <TextBlock Text="Zachód: 21:41"
+                                                       HorizontalAlignment="Right"/>
+                                        </Grid>
+
+                                        <Separator />
+
+                                        <TextBlock Text="Opady: 3.1mm"
+                                                   Margin="5 0 0 0" />
+                                        <TextBlock Text="Widoczność: 13.1 km"
+                                                   Margin="5 0 0 0" />
+                                        <TextBlock Text="Wiatr: 41 km/h"
+                                                   Margin="5 0 0 0" />
+                                        <TextBlock Text="Wilgotność: 51%"
+                                                   Margin="5 0 0 0" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                    </ListView>
+
+                </Grid>
+
+                <Grid Height="170"
+                      Margin="40 0 0 0"
+                      Style="{StaticResource ContentWeatherGrid}"
+                      x:Name="HourWeatherGrid">
+                    <ContentPresenter Style="{StaticResource HoursListContentPresenter}"/>
+                </Grid>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
 </Page>

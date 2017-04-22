@@ -17,6 +17,7 @@ namespace WeatherApp.Behaviors
     {
         private List<Frame> _frames;
         private WeatherWindowViewModel _weatherWindowViewModel;
+        private int _lastAnimatedFrameIndex;
 
         protected override void OnAttached()
         {
@@ -27,18 +28,28 @@ namespace WeatherApp.Behaviors
 
         private void PageChangeRequest(AnimatePageChangingMessage message)
         {
-            int frameIndexToAnimate = message.FrameToAnimate;
+            _lastAnimatedFrameIndex = message.FrameToAnimate;
 
             ThicknessAnimation thicknessAnimation = new ThicknessAnimation()
             {
                 Duration = TimeSpan.FromSeconds(0.3),
-                To = new Thickness(frameIndexToAnimate == 1 ? -800 : 0, 0, 0, 0),
+                To = new Thickness(_lastAnimatedFrameIndex == 1 ? -800 : 0, 0, 0, 0),
                 DecelerationRatio = 0.1,
-                From = new Thickness(frameIndexToAnimate == 1 ? 0 : -800, 0, 0, 0),
+                From = new Thickness(_lastAnimatedFrameIndex == 1 ? 0 : -800, 0, 0, 0),
                 FillBehavior = FillBehavior.HoldEnd
             };
+            thicknessAnimation.Completed += ThicknessAnimation_Completed;
 
             _frames[0].BeginAnimation(Frame.MarginProperty, thicknessAnimation);
+        }
+
+        private void ThicknessAnimation_Completed(object sender, EventArgs e)
+        {
+            MVVMMessagerService.SendMessage(typeof(PageChangeFinishedMessage), new PageChangeFinishedMessage
+            {
+                FrameIndex = _lastAnimatedFrameIndex
+            });
+            GC.Collect();
         }
 
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)

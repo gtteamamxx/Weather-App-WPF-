@@ -52,9 +52,6 @@
     <StartupObject>WeatherApp.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="APIXULib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\APIXUWeatherData.1.0.1\lib\APIXULib.dll</HintPath>
-    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
@@ -104,12 +101,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\DisableBackSpaceKeyBehavior.cs" />
     <Compile Include="Behaviors\ShowDetailGridHeightAnimationBehavior.cs" />
     <Compile Include="Behaviors\StackPanelFramesAnimationBehavior.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\EnglishHourToUTCHourConverter.cs" />
+    <Compile Include="Converters\IntToPercentConverter.cs" />
+    <Compile Include="Converters\StringToStringWithKmConverter.cs" />
+    <Compile Include="Converters\StringToStringWiithGradeAndCTempConverter.cs" />
+    <Compile Include="Converters\StringToStringWithGradeConverter.cs" />
+    <Compile Include="Converters\StringToStringWithHpaConverter.cs" />
+    <Compile Include="Converters\StringToStringWithKmphConverter.cs" />
+    <Compile Include="Converters\StringToStringWithMmConverter.cs" />
     <Compile Include="Models\Application\MVVMMessagerService.cs" />
+    <Compile Include="Models\Weather\Astro.cs" />
+    <Compile Include="Models\Weather\Condition.cs" />
+    <Compile Include="Models\Weather\Current.cs" />
+    <Compile Include="Models\Weather\Day.cs" />
+    <Compile Include="Models\Weather\Forecast.cs" />
+    <Compile Include="Models\Weather\Forecastday.cs" />
+    <Compile Include="Models\Weather\Hour.cs" />
+    <Compile Include="Models\Weather\Location.cs" />
+    <Compile Include="Models\Weather\WeatherModel.cs" />
     <Compile Include="MVVMMessages\AnimatePageChangingMessage.cs" />
     <Compile Include="MVVMMessages\MessageBase.cs" />
+    <Compile Include="MVVMMessages\PageChangeFinishedMessage.cs" />
     <Compile Include="MVVMMessages\PageChangeMessage.cs" />
     <Compile Include="MVVMMessages\ShowWeatherOfCityMessage.cs" />
     <Compile Include="ViewModels\CityWeatherPageViewModel.cs" />

@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeatherApp.Models.Weather;
 
 namespace WeatherApp.MVVMMessages
 {
-    public class ShowWeatherOfCityMessage : MessageBase
+    class PageChangeFinishedMessage : MessageBase
     {
-        public WeatherModel WeatherModel
+        public int FrameIndex
         {
             get
             {
-                return (WeatherModel)base.FirstObject;
+                return (int)base.FirstObject;
             }
             set
             {

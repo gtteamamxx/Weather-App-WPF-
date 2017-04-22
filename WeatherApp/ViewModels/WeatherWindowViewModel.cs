@@ -36,7 +36,26 @@ namespace WeatherApp.ViewModels
         private void WindowLoaded()
         {
             MVVMMessagerService.RegisterReceiver<PageChangeMessage>(typeof(PageChangeMessage), PageChangeRequest);
+            MVVMMessagerService.RegisterReceiver<PageChangeFinishedMessage>(typeof(PageChangeFinishedMessage), PageChangeFinished);
+
+            LoadWeather();
+        }
+
+        private void LoadWeather()
+        {
             Page = new Views.LoadingPage();
+        }
+
+        private void PageChangeFinished(PageChangeFinishedMessage obj)
+        {
+            if(obj.FrameIndex == 0)
+            {
+                Page2 = null;
+            }
+            else
+            {
+                Page = null;
+            }
         }
 
         private void PageChangeRequest(PageChangeMessage message)

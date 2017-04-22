@@ -23,6 +23,10 @@
         <viewmodels:WeatherWindowViewModel />
     </Window.DataContext>
 
+    <i:Interaction.Behaviors>
+        <behaviors:DisableBackSpaceKeyBehavior/>
+    </i:Interaction.Behaviors>
+    
     <StackPanel Orientation="Horizontal">
         <i:Interaction.Behaviors>
             <behaviors:StackPanelFramesAnimationBehavior />
