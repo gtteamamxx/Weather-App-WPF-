@@ -104,10 +104,12 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                                 <Grid Width="280"
-                                      Height="30"
                                       Margin="0, 5">
                                     <StackPanel>
-                                        <TextBlock FontWeight="Bold">
+                                        <TextBlock FontWeight="Bold"
+                                                   Width="240"
+                                                   HorizontalAlignment="Left"
+                                                   TextWrapping="Wrap">
                                             <Run Text="Miasto:"
                                                  FontWeight="DemiBold"/>
                                             <Run Text="{Binding name}"
@@ -154,7 +156,7 @@
                        HorizontalAlignment="Center"
                        Style="{StaticResource TextBlockHeaderStyle}"
                        FontSize="16"
-                       Text='Wybierz miasto aby kontynuować'/>
+                       Text='Wybierz miasto, aby kontynuować'/>
         </StackPanel>
 
     </Grid>
