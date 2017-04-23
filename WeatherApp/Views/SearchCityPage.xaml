@@ -79,7 +79,6 @@
                   Width="300">
 
                 <ComboBox Margin="3.875,0"
-                          IsEnabled="False"
                           SelectedItem="{Binding SelectedTipCity}"
                           IsDropDownOpen="{Binding IsCitiesTipOpen}"
                           ItemsSource="{Binding CityTips}">
