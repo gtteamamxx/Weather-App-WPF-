@@ -43,8 +43,8 @@ namespace WeatherApp.Behaviors
             DoubleAnimation getHeightAnimation()
             {
                 return new DoubleAnimation(
-                    _isOpened ? 20 : 330, 
-                    _isOpened ? 330 : 20, 
+                    _isOpened ? 20 : 360, 
+                    _isOpened ? 360 : 20, 
                     new Duration(TimeSpan.FromSeconds(0.2)));
             }
 

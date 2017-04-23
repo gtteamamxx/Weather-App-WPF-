@@ -3,10 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WeatherApp.Views"
+      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:vm="clr-namespace:WeatherApp.ViewModels"
       xmlns:behaviors="clr-namespace:WeatherApp.Behaviors"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:weather="clr-namespace:WeatherApp.Models.Weather"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       Title="CityWeatherPage">
@@ -16,7 +17,7 @@
     </Page.DataContext>
 
     <Page.Resources>
-        
+
         <Style x:Key="ContentWeatherGrid" TargetType="Grid">
             <Setter Property="Background">
                 <Setter.Value>
@@ -35,11 +36,6 @@
                                               Storyboard.TargetName="ForecastWeatherGrid">
                 <EasingThicknessKeyFrame KeyTime="0" Value="40,20,800,20"/>
                 <EasingThicknessKeyFrame KeyTime="0:0:0.8" Value="40,20,40,20"/>
-            </ThicknessAnimationUsingKeyFrames>
-            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
-                                              Storyboard.TargetName="HourWeatherGrid">
-                <EasingThicknessKeyFrame KeyTime="0" Value="40,0,800,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:1" Value="40,0,40,0"/>
             </ThicknessAnimationUsingKeyFrames>
             <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" 
                                               Storyboard.TargetName="ShowDetailGrid">
@@ -78,13 +74,15 @@
         <Style TargetType="ContentPresenter" x:Key="HoursListContentPresenter">
             <Setter Property="ContentTemplate">
                 <Setter.Value>
-                    <DataTemplate>
-                        <Grid>
+                    <DataTemplate DataType="{x:Type weather:Hour}">
+                        <Grid x:Name="dataContextGrid">
+
                             <ListView Margin="5"
                                       BorderBrush="Transparent"
                                       BorderThickness="0"
+                                      ItemsSource="{Binding}"
                                       Background="Transparent">
-                                
+
                                 <ListView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"
@@ -93,11 +91,11 @@
                                 </ListView.ItemsPanel>
 
                                 <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Height="150"
-                                              Width="180"
+                                    <DataTemplate DataType="{x:Type weather:Hour}">
+                                        <Grid Height="160"
+                                              Width="190"
                                               Margin="2">
-
+                                                
                                             <Grid.Resources>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Foreground" Value="White" />
@@ -109,45 +107,62 @@
                                             </Grid.Background>
 
                                             <StackPanel Margin="5 0 5 0">
-                                                <TextBlock Text="00:00"
+                                                <TextBlock Text="{Binding time}"
                                                            HorizontalAlignment="Center"
                                                            FontSize="20"
                                                            Foreground="LightGray" />
                                                 <Separator />
-                                                <TextBlock Text="3.9*C"
+                                                <TextBlock Text="{Binding temp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
                                                            Foreground="Yellow"
                                                            FontSize="20"
                                                            HorizontalAlignment="Center" />
 
-                                                <TextBlock Text="Odczuwalna: 2.4*C"
-                                                           Foreground="Pink"
+                                                <TextBlock Foreground="Pink"
                                                            FontSize="10"
-                                                           HorizontalAlignment="Center" />
+                                                           HorizontalAlignment="Center">
+                                                    <Run Text="Odczuwalna:" />
+                                                    <Run Text="{Binding feelslike_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" />
+                                                </TextBlock>
+
                                                 <Grid>
-                                                    <TextBlock Text="Opady: 0.0mm"
-                                                               FontSize="11"
-                                                               Foreground="LightGreen"/>
-                                                    <TextBlock Text="Wilgotność: 67%" 
-                                                               HorizontalAlignment="Right"
+                                                    <TextBlock FontSize="11"
+                                                               Foreground="LightGreen">
+                                                        <Run Text="Opady:" />
+                                                        <Run Text="{Binding precip_mm, Converter={StaticResource StringToStringWithMmConverter}}" />
+                                                    </TextBlock>
+                                                    <TextBlock HorizontalAlignment="Right"
                                                                Foreground="LightGreen"
-                                                               FontSize="11"/>
+                                                               FontSize="11" >
+                                                        <Run Text="Widoczność" />
+                                                        <Run Text="{Binding vis_km, Converter={StaticResource StringToStringWithKmConverter}}" />
+                                                    </TextBlock>
                                                 </Grid>
 
                                                 <Grid>
-                                                    <TextBlock Text="Wiatr: 16.2 km/h"
+                                                    <TextBlock FontSize="11"
+                                                               Foreground="Azure" >
+                                                        <Run Text="Wiatr:" />
+                                                        <Run Text="{Binding wind_kph, Converter={StaticResource StringToStringWithKmphConverter}}" />
+                                                    </TextBlock>
+                                                    <TextBlock HorizontalAlignment="Right"
                                                                FontSize="11"
-                                                               Foreground="Azure"/>
-                                                    <TextBlock Text="Kierunek: WSW"
-                                                               HorizontalAlignment="Right"
-                                                               FontSize="11"
-                                                               Foreground="Azure"/>
+                                                               Foreground="Azure" >
+                                                        <Run Text="Kierunek:" />
+                                                        <Run Text="{Binding wind_dir}" />
+                                                    </TextBlock>
                                                 </Grid>
-                                                <TextBlock Text="Ciśnienie: 1027 hPa"
-                                                           Foreground="Beige"/>
-                                                <TextBlock Text="Zachmurzenie: 100%"
-                                                           Foreground="Beige"/>
-                                                <TextBlock Text="Widoczność: 11.7 km"
-                                                           Foreground="Beige"/>
+                                                <TextBlock Foreground="Beige">
+                                                    <Run Text="Ciśnienie:" />
+                                                    <Run Text="{Binding pressure_mb, Converter={StaticResource StringToStringWithHpaConverter}}" />
+                                                </TextBlock>
+                                                <TextBlock Foreground="Beige">
+                                                    <Run Text="Zachmurzenie:" />
+                                                    <Run Text="{Binding cloud, Converter={StaticResource IntToPercentConverter}}" />
+                                                </TextBlock>
+                                                <TextBlock Foreground="Beige">
+                                                    <Run Text="Widoczność:" />
+                                                    <Run Text="{Binding vis_km, Converter={StaticResource StringToStringWithKmConverter}}" />
+                                                </TextBlock>
                                             </StackPanel>
 
                                         </Grid>
@@ -159,6 +174,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <Storyboard x:Key="AnimateHourWeatherGridHeightChangeStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Height)" Storyboard.TargetName="HourWeatherGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="200"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
     </Page.Resources>
 
     <Page.Triggers>
@@ -168,6 +190,7 @@
         <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="ShowDetailGrid">
             <BeginStoryboard Storyboard="{StaticResource UnhighlightShowDetailInfoStoryboard}"/>
         </EventTrigger>
+
     </Page.Triggers>
 
     <i:Interaction.Triggers>
@@ -176,7 +199,7 @@
                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
+
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   Margin="0 0 15 0">
 
@@ -184,7 +207,16 @@
             <ImageBrush ImageSource="/WeatherApp;component/Assets/appbckg4.jpg" />
         </ScrollViewer.Background>
 
-        <Grid Margin="0 40 0 40">
+
+        <Grid>
+            <controls:ProgressRing Width="100"
+                                   Height="100"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Red"
+                                   IsActive="{Binding IsProgressRingActive}" />
+
+            <Grid Margin="0 40 0 40">
             <StackPanel x:Name="Content">
 
                 <!-- Current Weather -->
@@ -212,18 +244,14 @@
                         <StackPanel Orientation="Horizontal">
 
                             <StackPanel.Resources>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}" >
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockHeaderStyle}" >
                                     <Setter Property="Foreground" Value="White" />
                                     <Setter Property="FontSize" Value="14" />
                                     <Setter Property="FontWeight" Value="Light" />
                                 </Style>
                             </StackPanel.Resources>
 
-                            <TextBlock>
-                                <Run Text="{Binding Weather.location.lon, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" />
-                                <Run/>
-                                <Run Text="{Binding Weather.location.lat, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" />
-                            </TextBlock>
+                            <TextBlock><Run Text="{Binding Weather.location.lon, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" /><Run Text=" "/><Run/><Run Text=" "/><Run Text="{Binding Weather.location.lat, Converter={StaticResource StringToStringWithGradeConverter}, StringFormat=\{0:00.00\}}" /></TextBlock>
 
                         </StackPanel>
 
@@ -250,20 +278,14 @@
                                        VerticalAlignment="Top" />
 
                             <TextBlock Foreground="Pink"
-                                       HorizontalAlignment="Center">
-                                <Run Text="Odczuwalne:" />
-                                <Run Text="{Binding Weather.current.feelslike_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" />
-                            </TextBlock>
+                                       HorizontalAlignment="Center"><Run Text="Odczuwalne:" /><Run Text=" "/><Run Text="{Binding Weather.current.feelslike_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" /></TextBlock>
 
                             <TextBlock VerticalAlignment="Bottom"
                                    TextWrapping="Wrap"
                                    Margin="0 20"
                                    TextAlignment="Center"
-                                   Foreground="Aqua">
-                            <Run Text="Ostatnia aktualizacja:"/>
-                            <Run Text="{Binding Weather.current.last_updated}"
-                                 Foreground="LightGray"/>
-                            </TextBlock>
+                                   Foreground="Aqua"><Run Text="Ostatnia aktualizacja:"/><Run Text=" "/><Run Text="{Binding Weather.current.last_updated}"
+                                 Foreground="LightGray"/></TextBlock>
                         </StackPanel>
 
                         <Border Style="{StaticResource BorderRightTransparent}" />
@@ -274,22 +296,11 @@
 
                             <TextBlock 
                                        Foreground="LightGreen"
-                                       FontSize="20">
-                                <Run Text="Wiatr:"/>
-                                <Run Text="{Binding Weather.current.wind_kph,Converter={StaticResource StringToStringWithKmphConverter}}" />
-                            </TextBlock>
-                            <TextBlock Foreground="LightGray">
-                                <Run Text="Kierunek wiatru:" />
-                                <Run Text="{Binding Weather.current.wind_dir}" />
-                                <Run Text="|" />
-                                <Run Text="{Binding Weather.current.wind_degree,Converter={StaticResource StringToStringWithGradeConverter}}" />
-                            </TextBlock>
+                                       FontSize="20"><Run Text="Wiatr:"/><Run Text=" "/><Run Text="{Binding Weather.current.wind_kph, Converter={StaticResource StringToStringWithKmphConverter}}" /></TextBlock>
+                            <TextBlock Foreground="LightGray"><Run Text="Kierunek wiatru:" /><Run Text=" "/><Run Text="{Binding Weather.current.wind_dir}" /><Run Text=" "/><Run Text="|" /><Run Text=" "/><Run Text="{Binding Weather.current.wind_degree, Converter={StaticResource StringToStringWithGradeConverter}}" /></TextBlock>
                             <TextBlock Margin="0 10"
                                        Foreground="LightGreen"
-                                       FontSize="20">
-                                <Run Text="Ciśnienie:" />
-                                <Run Text="{Binding Weather.current.pressure_in}" />
-                            </TextBlock>
+                                       FontSize="20"><Run Text="Ciśnienie:" /><Run Text=" "/><Run Text="{Binding Weather.current.pressure_mb, Converter={StaticResource StringToStringWithHpaConverter}}" /></TextBlock>
                         </StackPanel>
 
                         <Border Style="{StaticResource BorderRightTransparent}"
@@ -299,51 +310,28 @@
                                     Margin="10 10"
                                     VerticalAlignment="Center">
                             <StackPanel.Resources>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockHeaderStyle}">
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockHeaderStyle}">
                                     <Setter Property="FontSize" Value="16" />
                                 </Style>
                             </StackPanel.Resources>
 
-                            <TextBlock Foreground="AntiqueWhite">
-                                <Run Text="Widoczność:" />
-                                <Run Text="{Binding Weather.current.vis_km, Converter={StaticResource StringToStringWithKmConverter}}" />
-                            </TextBlock>
-                            <TextBlock Foreground="LimeGreen">
-                                <Run Text="Wilgotność:" />
-                                <Run Text="{Binding Weather.current.humidity, Converter={StaticResource IntToPercentConverter}}" />
-                            </TextBlock>
-                            <TextBlock Foreground="AliceBlue">
-                                <Run Text="Zachmurzenie:" />
-                                <Run Text="{Binding Weather.current.cloud, Converter={StaticResource IntToPercentConverter}}" />
-                            </TextBlock>
-                            <TextBlock Foreground="White">
-                                <Run Text="Opady:" />
-                                <Run Text="{Binding Weather.current.precip_in, Converter={StaticResource StringToStringWithMmConverter}}" />
-                            </TextBlock>
+                            <TextBlock Foreground="AntiqueWhite"><Run Text="Widoczność:" /><Run Text=" "/><Run Text="{Binding Weather.current.vis_km, Converter={StaticResource StringToStringWithKmConverter}}" /></TextBlock>
+                            <TextBlock Foreground="LimeGreen"><Run Text="Wilgotność:" /><Run Text=" "/><Run Text="{Binding Weather.current.humidity, Converter={StaticResource IntToPercentConverter}}" /></TextBlock>
+                            <TextBlock Foreground="AliceBlue"><Run Text="Zachmurzenie:" /><Run Text=" "/><Run Text="{Binding Weather.current.cloud, Converter={StaticResource IntToPercentConverter}}" /></TextBlock>
+                            <TextBlock Foreground="White"><Run Text="Opady:" /><Run Text=" "/><Run Text="{Binding Weather.current.precip_in, Converter={StaticResource StringToStringWithMmConverter}}" /></TextBlock>
                         </StackPanel>
                     </Grid>
                 </Grid>
 
                 <!-- Detail of current weather -->
-                <Grid x:Name="ShowDetailGrid" 
-                      Style="{StaticResource ContentWeatherGrid}"
+                <Grid x:Name="ShowDetailGrid"
                       Margin="40 0"
                       Height="20"
                       VerticalAlignment="Bottom"
                       Cursor="Hand">
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    
-                    <i:Interaction.Behaviors>
-                        <behaviors:ShowDetailGridHeightAnimationBehavior />
-                    </i:Interaction.Behaviors>
-
                     <Grid.Resources>
-                        <Style x:Key="ColumnHeaderTextBlockStyle" TargetType="TextBlock">
+                        <Style x:Key="ColumnHeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
                             <Setter Property="HorizontalAlignment" Value="Center" />
                             <Setter Property="VerticalAlignment" Value="Top" />
                             <Setter Property="Margin" Value="10 0" />
@@ -352,15 +340,29 @@
                         </Style>
                     </Grid.Resources>
 
+                    <Grid.Style>
+                        <StaticResource ResourceKey="ContentWeatherGrid"/>
+                    </Grid.Style>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <i:Interaction.Behaviors>
+                        <behaviors:ShowDetailGridHeightAnimationBehavior />
+                    </i:Interaction.Behaviors>
+
                     <StackPanel Orientation="Horizontal" 
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top">
 
                         <StackPanel.Resources>
-                            <Style x:Key="ShowInfoText" TargetType="TextBlock">
+                            <Style x:Key="ShowInfoText" TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="Pokaż szczegółowe informacje" />
                             </Style>
-                            <Style x:Key="HideInfoText" TargetType="TextBlock">
+                            <Style x:Key="HideInfoText" TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="Ukryj szczegółowe informacje" />
                             </Style>
                         </StackPanel.Resources>
@@ -417,34 +419,31 @@
                                         Margin="10">
 
                                 <StackPanel.Resources>
-                                    <Style TargetType="TextBlock">
+                                    <Style TargetType="{x:Type TextBlock}">
                                         <Setter Property="FontSize" Value="20" />
                                         <Setter Property="TextAlignment" Value="Center" />
                                     </Style>
 
-                                    <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource ColumnHeaderTextBlockStyle}">
+                                    <Style x:Key="HeaderTextBlock" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ColumnHeaderTextBlockStyle}">
                                         <Setter Property="FontSize" Value="11" />
                                         <Setter Property="Foreground" Value="White" />
                                     </Style>
                                 </StackPanel.Resources>
 
                                 <StackPanel Margin="5">
-                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.mintemp_c,
-                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.mintemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
                                                Foreground="Yellow"/>
                                     <TextBlock Text="Minimalna"
                                                Style="{StaticResource HeaderTextBlock}"/>
                                 </StackPanel>
                                 <StackPanel Margin="5">
-                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.avgtemp_c,
-                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.avgtemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
                                                Foreground="LightGreen"/>
                                     <TextBlock Text="Średnia"
                                                Style="{StaticResource HeaderTextBlock}"/>
                                 </StackPanel>
                                 <StackPanel Margin="5">
-                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.maxtemp_c,
-                                        Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
+                                    <TextBlock Text="{Binding Weather.forecast.forecastday[0].day.maxtemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
                                                Foreground="Orange"/>
                                     <TextBlock Text="Najwyższa"
                                                Style="{StaticResource HeaderTextBlock}"/>
@@ -514,8 +513,7 @@
                             <StackPanel HorizontalAlignment="Left"
                                         VerticalAlignment="Bottom"
                                         Margin="40 20">
-                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunrise,
-                                        Converter={StaticResource EnglishHourToUTCHourConverter}}"
+                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunrise, Converter={StaticResource EnglishHourToUTCHourConverter}}"
                                            FontSize="16"
                                            TextAlignment="Center"/>
                                 <TextBlock Text="Wschód"
@@ -525,8 +523,7 @@
                             <StackPanel HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Margin="40 20">
-                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunset,
-                                        Converter={StaticResource EnglishHourToUTCHourConverter}}"
+                                <TextBlock Text="{Binding Weather.forecast.forecastday[0].astro.sunset, Converter={StaticResource EnglishHourToUTCHourConverter}}"
                                            FontSize="16"
                                            TextAlignment="Center"/>
                                 <TextBlock Text="Zachód"
@@ -545,14 +542,14 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            
+
                             <TextBlock Text="Inne"
                                        Style="{StaticResource ColumnHeaderTextBlockStyle}" />
-                            
+
                             <StackPanel Margin="15 0"
                                         Grid.Row="1"
                                         VerticalAlignment="Center">
-    
+
                                 <StackPanel.Resources>
                                     <Style TargetType="{x:Type Image}">
                                         <Setter Property="Effect">
@@ -570,67 +567,61 @@
                                     <Image Source="/WeatherApp;component/Assets/wind.png" />
 
                                     <TextBlock Foreground="White"
-                                               Margin="10 0">
-                                        <Run Text="Wiatr:" />
-                                        <Run Text="{Binding Weather.current.wind_kph}"/>
-                                        <Run Text=" - " />
-                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.maxwind_kph,
-                                            Converter={StaticResource StringToStringWithKmphConverter}}" />
-                                    </TextBlock>
+                                               Margin="10 0"><Run Text="Wiatr:" /><Run Text=" "/><Run Text="{Binding Weather.current.wind_kph}"/><Run Text=" "/><Run Text=" - " /><Run Text=" "/><Run Text="{Binding Weather.forecast.forecastday[0].day.maxwind_kph, Converter={StaticResource StringToStringWithKmphConverter}}" /></TextBlock>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0 10 0 0">
                                     <Image Source="/WeatherApp;component/Assets/visibility.png" />
                                     <TextBlock Foreground="White"
-                                               Margin="10 0">
-                                        <Run Text="Widoczność:" />
-                                        <Run Text="{Binding Weather.current.vis_km}"/>
-                                        <Run Text=" - " />
-                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.avgvis_km,
-                                            Converter={StaticResource StringToStringWithKmConverter}}" />
-                                    </TextBlock>
+                                               Margin="10 0"><Run Text="Widoczność:" /><Run Text=" "/><Run Text="{Binding Weather.current.vis_km}"/><Run Text=" "/><Run Text=" - " /><Run Text=" "/><Run Text="{Binding Weather.forecast.forecastday[0].day.avgvis_km, Converter={StaticResource StringToStringWithKmConverter}}" /></TextBlock>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0 10">
                                     <Image Source="/WeatherApp;component/Assets/humidity.png" />
                                     <TextBlock Foreground="White"
-                                               Margin="10 0">
-                                        <Run Text="Wilgotność:" />
-                                        <Run Text="{Binding Weather.current.humidity, Converter=
-                                            {StaticResource IntToPercentConverter}}"/>
-                                        <Run Text="/" />
-                                        <Run Text="{Binding Weather.forecast.forecastday[0].day.avghumidity, Converter=
-                                            {StaticResource IntToPercentConverter}}" />
-                                    </TextBlock>
+                                               Margin="10 0"><Run Text="Wilgotność:" /><Run Text=" "/><Run Text="{Binding Weather.current.humidity, Converter={StaticResource IntToPercentConverter}}"/><Run Text=" "/><Run Text="/" /><Run Text=" "/><Run Text="{Binding Weather.forecast.forecastday[0].day.avghumidity, Converter={StaticResource IntToPercentConverter}}" /></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
                     </Grid>
-                    
+
                     <Separator Grid.Row="2" VerticalAlignment="Top" />
-                    
+
                     <ContentPresenter Grid.Row="2"
-                                      Height="175" 
-                                      Style="{StaticResource HoursListContentPresenter}" />
+                                      Height="210" 
+                                      Style="{StaticResource HoursListContentPresenter}"
+                                      DataContext="{Binding CurrentDayHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
                 <!-- Forecast Weather -->
-                <Grid Height="200"
+                <Grid Height="250"
                       Margin="40 20"
                       Style="{StaticResource ContentWeatherGrid}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                       x:Name="ForecastWeatherGrid">
 
-                    <ListView Background="Transparent"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="25"
+                               Foreground="GreenYellow"
+                               Text="Kolejne dni">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Opacity="0.6" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <ListView Grid.Row="1"
+                              Background="Transparent"
                               BorderBrush="Transparent"
+                              ItemsSource="{Binding ForecastDays}"
+                              SelectedItem="{Binding SelectedForecastDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               BorderThickness="0">
-                        <ListView.Resources>
-                            <Style  TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="White" />
-                            </Style>
-                        </ListView.Resources>
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -640,70 +631,76 @@
                         </ListView.ItemsPanel>
 
                         <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Width="150"
-                                      Height="190"
+                            <DataTemplate DataType="{x:Type weather:Forecastday}">
+                                <Grid Width="160"
+                                      Height="175"
                                       Margin="10 0 10 0">
+
+                                    <Grid.Resources>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Foreground" Value="White" />
+                                        </Style>
+                                    </Grid.Resources>
+
                                     <Grid.Background>
                                         <SolidColorBrush Color="Blue" Opacity="0.3" />
                                     </Grid.Background>
 
                                     <StackPanel>
-                                        <TextBlock Text="2017-04-22" 
+                                        <TextBlock Text="{Binding date}" 
                                                    HorizontalAlignment="Center"
                                                    FontSize="18"
                                                    FontWeight="Light"/>
                                         <Separator />
-                                        <TextBlock Text="9*C"
+                                        <TextBlock Text="{Binding day.avgtemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}"
                                                    HorizontalAlignment="Center"
                                                    Margin="0 -4 0 0"
                                                    FontSize="32"
-                                                   Foreground="Yellow"/>
-                                        <TextBlock Text="Odczuwalne: 4*C"
-                                                   HorizontalAlignment="Center"
-                                                   Foreground="Pink" />
+                                                   Foreground="Yellow" />
                                         <Grid Margin="5 0">
-                                            <TextBlock Text="Min: 1*C"
-                                                       Foreground="Yellow" />
-                                            <TextBlock Text="Wschód: 6:11"
-                                                       HorizontalAlignment="Right"/>
+                                            <TextBlock Foreground="Yellow"><Run Text="Min:" /><Run Text=" "/><Run Text="{Binding day.mintemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" /></TextBlock>
+                                            <TextBlock HorizontalAlignment="Right"
+                                                       Foreground="Pink"><Run Text="Wschód:" /><Run Text=" "/><Run Text="{Binding astro.sunrise, Converter={StaticResource EnglishHourToUTCHourConverter}}" /></TextBlock>
                                         </Grid>
                                         <Grid Margin="5 0">
-                                            <TextBlock Text="Max: 13*C"
-                                                       Foreground="Orange" />
-                                            <TextBlock Text="Zachód: 21:41"
-                                                       HorizontalAlignment="Right"/>
+                                            <TextBlock Foreground="Orange"><Run Text="Max:" /><Run Text=" "/><Run Text="{Binding day.maxtemp_c, Converter={StaticResource StringToStringWiithGradeAndCTempConverter}}" /></TextBlock>
+                                            <TextBlock HorizontalAlignment="Right"
+                                                       Foreground="Pink"><Run Text="Zachód:" /><Run Text=" "/><Run Text="{Binding astro.sunset, Converter={StaticResource EnglishHourToUTCHourConverter}}" /></TextBlock>
                                         </Grid>
 
                                         <Separator />
 
-                                        <TextBlock Text="Opady: 3.1mm"
-                                                   Margin="5 0 0 0" />
-                                        <TextBlock Text="Widoczność: 13.1 km"
-                                                   Margin="5 0 0 0" />
-                                        <TextBlock Text="Wiatr: 41 km/h"
-                                                   Margin="5 0 0 0" />
-                                        <TextBlock Text="Wilgotność: 51%"
-                                                   Margin="5 0 0 0" />
+                                        <TextBlock Margin="5 0 0 0" ><Run Text="Opady:" /><Run Text=" "/><Run Text="{Binding day.totalprecip_mm, Converter={StaticResource StringToStringWithMmConverter}}" /></TextBlock>
+                                        <TextBlock Margin="5 0 0 0"><Run Text="Widoczność:" /><Run Text=" "/><Run Text="{Binding day.avgvis_km, Converter={StaticResource StringToStringWithKmConverter}}" /></TextBlock>
+                                        <TextBlock Margin="5 0 0 0" ><Run Text="Wiatr:" /><Run Text=" "/><Run Text="{Binding day.maxwind_kph, Converter={StaticResource StringToStringWithKmphConverter}}" /></TextBlock>
+                                        <TextBlock Margin="5 0 0 0"><Run Text="Wilgotność:" /><Run Text=" "/><Run Text="{Binding day.avghumidity, Converter={StaticResource IntToPercentConverter}}" /></TextBlock>
                                     </StackPanel>
 
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
 
+                        <ListView.Triggers>
+                            <EventTrigger RoutedEvent="ListView.SelectionChanged">
+                                <BeginStoryboard Storyboard="{StaticResource AnimateHourWeatherGridHeightChangeStoryboard}" HandoffBehavior="Compose" />
+                            </EventTrigger>
+                        </ListView.Triggers>
                     </ListView>
 
                 </Grid>
 
-                <Grid Height="170"
-                      Margin="40 0 0 0"
+                <Grid Margin="40 0 40 0"
+                      Visibility="Visible"
+                      Height="0"
                       Style="{StaticResource ContentWeatherGrid}"
                       x:Name="HourWeatherGrid">
-                    <ContentPresenter Style="{StaticResource HoursListContentPresenter}"/>
+                    <ContentPresenter Style="{StaticResource HoursListContentPresenter}"
+                                      DataContext="{Binding SelectedForecastDayHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
             </StackPanel>
 
+        </Grid>
         </Grid>
     </ScrollViewer>
 </Page>

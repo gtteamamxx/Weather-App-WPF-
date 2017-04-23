@@ -15,7 +15,8 @@
         <converters:IntToPercentConverter x:Key="IntToPercentConverter" />
         <converters:StringToStringWithMmConverter x:Key="StringToStringWithMmConverter" />
         <converters:EnglishHourToUTCHourConverter x:Key="EnglishHourToUTCHourConverter" />
-
+        <converters:SelectedForecastDayHeightConverter x:Key="SelectedForecastDayHeightConverter" />
+        
         <Style x:Key="TextBlockHeaderStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="32" />

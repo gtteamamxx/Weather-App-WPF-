@@ -17,10 +17,12 @@ namespace WeatherApp.ViewModels
 {
     class CityWeatherPageViewModel : ViewModelBase
     {
+        #region Init
         public CityWeatherPageViewModel()
         {
-            MVVMMessagerService.RegisterReceiver<ShowWeatherOfCityMessage>(typeof(ShowWeatherOfCityMessage), ShowWeatherForCity);
+            MVVMMessagerService.RegisterReceiver<ShowWeatherOfCityMessage>(typeof(ShowWeatherOfCityMessage), ShowWeatherForCityAsync);
         }
+
         private WeatherModel _weather;
         public WeatherModel Weather
         {
@@ -28,6 +30,8 @@ namespace WeatherApp.ViewModels
             set => OnPropertyChanged(ref _weather, value);
         }
         private CityWeatherPage _cityWeatherPage;
+
+        #endregion
 
         #region Commands
         private RelayCommand<object> _pageLoadedCommand;
@@ -37,6 +41,44 @@ namespace WeatherApp.ViewModels
 
         #region Properties
 
+        private List<Forecastday> _forecastDays;
+        public List<Forecastday> ForecastDays
+        {
+            get => _forecastDays;
+            set => OnPropertyChanged(ref _forecastDays, value);
+        }
+
+        private List<Hour> _selectedForecastDayHours;
+        public List<Hour> SelectedForecastDayHours
+        {
+            get => _selectedForecastDayHours;
+            set => OnPropertyChanged(ref _selectedForecastDayHours, value);
+        }
+
+        private List<Hour> _currentDayHours;
+        public List<Hour> CurrentDayHours
+        {
+            get => _currentDayHours;
+            set => OnPropertyChanged(ref _currentDayHours, value);
+        }
+
+        private Forecastday _selectedForecastDay;
+        public Forecastday SelectedForecastDay
+        {
+            get => _selectedForecastDay;
+            set
+            {
+                OnPropertyChanged(ref _selectedForecastDay, value);
+                SelectedForecastDayHours = value?.hour;
+            }
+        }
+
+        private bool _isProgressRingActive;
+        public bool IsProgressRingActive
+        {
+            get => _isProgressRingActive;
+            set => OnPropertyChanged(ref _isProgressRingActive, value);
+        }
         #endregion
 
         private void PageLoaded(object page)
@@ -47,14 +89,16 @@ namespace WeatherApp.ViewModels
 
         private void LoadPage()
         {
-            SetMainGridVisibility(Visibility.Visible);
             SetPageContent();
+            SetMainGridVisibility(Visibility.Visible);
+            IsProgressRingActive = false;
             StartLoadAnimation();
         }
 
         private void SetPageContent()
         {
-           
+            ForecastDays = Weather.forecast.forecastday.Skip(1).ToList();
+            CurrentDayHours = Weather.forecast.forecastday.First().hour;
         }
 
         private void StartLoadAnimation()
@@ -62,9 +106,10 @@ namespace WeatherApp.ViewModels
             ((dynamic)_cityWeatherPage.Resources["PageLoadedGridAnimation"]).Begin();
         }
 
-        private async void ShowWeatherForCity(ShowWeatherOfCityMessage message)
+        private async void ShowWeatherForCityAsync(ShowWeatherOfCityMessage message)
         {
             Weather = message.WeatherModel;
+            IsProgressRingActive = true;
             Weather = await APIXUWeatherService.GetWeatherFromCityAsync(Weather.location.name);
             LoadPage();
         }
