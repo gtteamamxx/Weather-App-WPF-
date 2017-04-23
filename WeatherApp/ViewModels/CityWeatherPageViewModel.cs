@@ -89,10 +89,10 @@ namespace WeatherApp.ViewModels
 
         private void LoadPage()
         {
-            SetPageContent();
             SetMainGridVisibility(Visibility.Visible);
-            IsProgressRingActive = false;
+            SetPageContent();
             StartLoadAnimation();
+            IsProgressRingActive = false;
         }
 
         private void SetPageContent()

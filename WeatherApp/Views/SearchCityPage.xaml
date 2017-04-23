@@ -149,6 +149,12 @@
                              BorderBrush="Transparent" />
                 </Border>
             </Grid>
+
+            <TextBlock VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource TextBlockHeaderStyle}"
+                       FontSize="16"
+                       Text='Wybierz miasto aby kontynuować'/>
         </StackPanel>
 
     </Grid>
