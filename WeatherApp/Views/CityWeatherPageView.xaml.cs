@@ -18,9 +18,9 @@ namespace WeatherApp.Views
     /// <summary>
     /// Interaction logic for CityWeatherPage.xaml
     /// </summary>
-    public partial class CityWeatherPage : Page
+    public partial class CityWeatherPageView : Page
     {
-        public CityWeatherPage()
+        public CityWeatherPageView()
         {
             InitializeComponent();
         }

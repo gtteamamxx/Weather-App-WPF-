@@ -1,4 +1,4 @@
-﻿<Page x:Class="WeatherApp.Views.SearchCityPage"
+﻿<Page x:Class="WeatherApp.Views.SearchCityPageView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,6 +7,7 @@
       xmlns:vm="clr-namespace:WeatherApp.ViewModels"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       mc:Ignorable="d"
+      xmlns:cm="http://www.caliburnproject.org"
       d:DesignHeight="600" d:DesignWidth="800">
 
     <Page.DataContext>
@@ -43,17 +44,12 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0" 
-                        Style="{DynamicResource ButtonHoverColor}">
-                    
+                        Style="{DynamicResource ButtonHoverColor}"
+                        cm:Message.Attach="[Event Click] = [Action ShowWeatherButton_Click]">
+
                     <Image Source="/WeatherApp;component/Assets/rightarrow.png"
                            Width="50"/>
-                    
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ShowWeatherButtonCommand}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    
+
                 </Button>
                 <TextBlock Text="Przejdź dalej"
                            TextAlignment="Center"

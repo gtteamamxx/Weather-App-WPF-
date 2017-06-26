@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using Caliburn.Micro;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,37 +15,35 @@ using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
 {
-    public class SearchCityPageViewModel : ViewModelBase
+    public class SearchCityPageViewModel : PropertyChangedBase
     {
         public SearchCityPageViewModel()
         {
             CityTips = new ObservableCollection<Location>();
         }
-
-        #region Commands
-
-        private RelayCommand _showWeatherButtonCommand;
-        public RelayCommand ShowWeatherButtonCommand =>
-            _showWeatherButtonCommand ?? (_showWeatherButtonCommand = new RelayCommand(() => ShowWeatherButton_Click()));
-
-        #endregion
-
         private bool _isTipSelected;
 
         #region Properties
-        private bool _isCityTipOpen;
+        private bool _isCitiesTipOpen;
         public bool IsCitiesTipOpen
         {
-            get => _isCityTipOpen;
-            set => OnPropertyChanged(ref _isCityTipOpen, value);
-      
+            get => _isCitiesTipOpen;
+            set
+            {
+                _isCitiesTipOpen = value;
+                NotifyOfPropertyChange();
+            }
         }
 
         private ObservableCollection<Location> _cityTips;
         public ObservableCollection<Location> CityTips
         {
             get => _cityTips;
-            set => OnPropertyChanged(ref _cityTips, value);
+            set
+            {
+                _cityTips = value;
+                NotifyOfPropertyChange(() => CityTips);
+            }
         }
 
         private string _searchCityName = "(Nazwa miasta, Kraj)";
@@ -60,7 +59,8 @@ namespace WeatherApp.ViewModels
                 _temporarySelectedCity = null;
 
                 SearchTextChangedAsync(value);
-                OnPropertyChanged(ref _searchCityName, value);
+                _searchCityName = value;
+                NotifyOfPropertyChange();
             }
         }
 
@@ -76,7 +76,7 @@ namespace WeatherApp.ViewModels
 
                     SearchCityName = value.name;
                     _selectedTipCity = _temporarySelectedCity = value;
-                    OnPropertyChanged(ref _selectedTipCity, value);
+                    NotifyOfPropertyChange();
                 }
             }
         }
@@ -85,7 +85,11 @@ namespace WeatherApp.ViewModels
         public bool IsShowWeatherButtonVisible
         {
             get => _isShowWeatherButtonVisible;
-            set => OnPropertyChanged(ref _isShowWeatherButtonVisible, value);
+            set
+            {
+                _isShowWeatherButtonVisible = value;
+                NotifyOfPropertyChange();
+            }
         }
 
         private Location __temporarySelectedCity;
@@ -101,11 +105,11 @@ namespace WeatherApp.ViewModels
 
         #endregion
 
-        private void ShowWeatherButton_Click()
+        public void ShowWeatherButton_Click()
         {
             MVVMMessagerService.SendMessage(typeof(PageChangeMessage), new PageChangeMessage()
             {
-                PageToChange = new Views.CityWeatherPage()
+                PageToChange = new Views.CityWeatherPageView()
             });
             MVVMMessagerService.SendMessage(typeof(ShowWeatherOfCityMessage), new ShowWeatherOfCityMessage()
             {

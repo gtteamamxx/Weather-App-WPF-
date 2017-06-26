@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using Caliburn.Micro;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using WeatherApp.Views;
 
 namespace WeatherApp.ViewModels
 {
-    class CityWeatherPageViewModel : ViewModelBase
+    class CityWeatherPageViewModel : PropertyChangedBase
     {
         #region Init
         public CityWeatherPageViewModel()
@@ -27,16 +28,14 @@ namespace WeatherApp.ViewModels
         public WeatherModel Weather
         {
             get => _weather;
-            set => OnPropertyChanged(ref _weather, value);
+            set
+            {
+                _weather = value;
+                NotifyOfPropertyChange(() => Weather);
+            }
         }
-        private CityWeatherPage _cityWeatherPage;
+        private CityWeatherPageView _cityWeatherPage;
 
-        #endregion
-
-        #region Commands
-        private RelayCommand<object> _pageLoadedCommand;
-        public RelayCommand<object> PageLoadedCommand =>
-            _pageLoadedCommand ?? (_pageLoadedCommand = new RelayCommand<object>(o => PageLoaded(o)));
         #endregion
 
         #region Properties
@@ -45,21 +44,33 @@ namespace WeatherApp.ViewModels
         public List<Forecastday> ForecastDays
         {
             get => _forecastDays;
-            set => OnPropertyChanged(ref _forecastDays, value);
+            set
+            {
+                _forecastDays = value;
+                NotifyOfPropertyChange(() => ForecastDays);
+            }
         }
 
         private List<Hour> _selectedForecastDayHours;
         public List<Hour> SelectedForecastDayHours
         {
             get => _selectedForecastDayHours;
-            set => OnPropertyChanged(ref _selectedForecastDayHours, value);
+            set
+            {
+                _selectedForecastDayHours = value;
+                NotifyOfPropertyChange(() => SelectedForecastDayHours);
+            }
         }
 
         private List<Hour> _currentDayHours;
         public List<Hour> CurrentDayHours
         {
             get => _currentDayHours;
-            set => OnPropertyChanged(ref _currentDayHours, value);
+            set
+            {
+                _currentDayHours = value;
+                NotifyOfPropertyChange(() => CurrentDayHours);
+            }
         }
 
         private Forecastday _selectedForecastDay;
@@ -68,7 +79,8 @@ namespace WeatherApp.ViewModels
             get => _selectedForecastDay;
             set
             {
-                OnPropertyChanged(ref _selectedForecastDay, value);
+                _selectedForecastDay = value;
+                NotifyOfPropertyChange(() => SelectedForecastDay);
                 SelectedForecastDayHours = value?.hour;
             }
         }
@@ -77,11 +89,15 @@ namespace WeatherApp.ViewModels
         public bool IsProgressRingActive
         {
             get => _isProgressRingActive;
-            set => OnPropertyChanged(ref _isProgressRingActive, value);
+            set
+            {
+                _isProgressRingActive = value;
+                NotifyOfPropertyChange(() => IsProgressRingActive);
+            }
         }
         #endregion
 
-        private void PageLoaded(object page)
+        public void PageLoaded(object page)
         {
             _cityWeatherPage = (dynamic)page;
             SetMainGridVisibility(Visibility.Collapsed);

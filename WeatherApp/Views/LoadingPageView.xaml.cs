@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WeatherApp.ViewModels;
 
 namespace WeatherApp.Views
 {
     /// <summary>
-    /// Interaction logic for SearchCityPage.xaml
+    /// Interaction logic for LoadingPage.xaml
     /// </summary>
-    public partial class SearchCityPage : Page
+    public partial class LoadingPageView : Page
     {
-        public SearchCityPage()
+        public LoadingPageView()
         {
             InitializeComponent();
         }

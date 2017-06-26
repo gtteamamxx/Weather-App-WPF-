@@ -10,10 +10,11 @@ using WeatherApp.Models.Factory;
 using WeatherApp.Properties;
 using WeatherApp.Models.Application;
 using WeatherApp.MVVMMessages;
+using Caliburn.Micro;
 
 namespace WeatherApp.ViewModels
 {
-    class LoadingPageViewModel : ViewModelBase
+    class LoadingPageViewModel : PropertyChangedBase
     {
         #region Commands
         private RelayCommand _pageLoadedCommand;
@@ -28,7 +29,11 @@ namespace WeatherApp.ViewModels
         public double LoadingValue
         {
             get => _loadingValue;
-            set => OnPropertyChanged(ref _loadingValue, value);
+            set
+            {
+                _loadingValue = value;
+                NotifyOfPropertyChange(() => LoadingValue);
+            }
         }
 
         #endregion
@@ -66,7 +71,7 @@ namespace WeatherApp.ViewModels
 
         private static void ShowWeatherWindow(bool selectCity = false)
         {
-            dynamic pageToShow = selectCity ? (object)new Views.SearchCityPage() : new Views.CityWeatherPage();
+            dynamic pageToShow = selectCity ? (object)new Views.SearchCityPageView() : new Views.CityWeatherPageView();
 
             MVVMMessagerService.SendMessage(typeof(PageChangeMessage), new PageChangeMessage()
             {

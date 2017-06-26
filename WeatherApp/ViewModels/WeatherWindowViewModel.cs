@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using Caliburn.Micro;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using WeatherApp.MVVMMessages;
 
 namespace WeatherApp.ViewModels
 {
-    class WeatherWindowViewModel : ViewModelBase
+    class WeatherWindowViewModel : PropertyChangedBase
     {
         private RelayCommand _windowLoadedCommand;
         public RelayCommand WindowLoadedCommand =>
@@ -21,14 +22,22 @@ namespace WeatherApp.ViewModels
         public Page Page
         {
             get => _page;
-            set => OnPropertyChanged(ref _page, value);
+            set
+            {
+                _page = value;
+                NotifyOfPropertyChange();
+            }
         }
 
         private Page _page2;
         public Page Page2
         {
             get => _page2;
-            set => OnPropertyChanged(ref _page2, value);
+            set
+            {
+                _page2 = value;
+                NotifyOfPropertyChange();
+            }
         }
 
         public int FramePosition { get; set; }
@@ -43,7 +52,7 @@ namespace WeatherApp.ViewModels
 
         private void LoadWeather()
         {
-            Page = new Views.LoadingPage();
+            Page = new Views.LoadingPageView();
         }
 
         private void PageChangeFinished(PageChangeFinishedMessage obj)
